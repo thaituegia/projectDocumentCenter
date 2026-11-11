@@ -39,3 +39,7 @@ Guest listing filename nhưng không nhận metadata nhạy cảm; public previe
 - Toàn bộ edge-case AC, security review, UAT J1–J5 và kiểm thử tải 100–500 concurrent / khoảng 50.000 file.
 
 Không dùng các kết quả local để tuyên bố đạt BR-38, BR-37 hoặc toàn bộ release. Toàn bộ story/AC vẫn được bảo toàn trong [acceptance-matrix.md](acceptance-matrix.md).
+
+## Cấu hình triển khai Render demo
+
+Docker multi-stage đã build thành công với TLS verification giữ nguyên. Container chạy non-root, tạo database/objects minh họa vào `/tmp`, health API trả OK; Chromium xác nhận auto-login demo, thư viện và document preview không có pageerror. `render.yaml` khai báo một web service free tại Singapore. Chưa deploy lên tài khoản Render, chưa có URL HTTPS công khai để xác nhận.

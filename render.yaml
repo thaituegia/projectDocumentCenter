@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: bacnhabook-demo
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: SERVE_BUILD
+        value: "true"
+      - key: DATA_DIR
+        value: /tmp/bacnhabook-demo

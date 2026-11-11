@@ -90,3 +90,7 @@ API contract của các route đã có: [OpenAPI](docs/openapi.json), cũng có 
 - `docs/requirements/`: bản văn bản trích xuất đủ PRD/backlog cùng implementation pack và JSON gốc.
 
 Stack là lựa chọn cho bản phát triển, **không coi là quyết định kiến trúc production đã duyệt**. Chưa chứng minh tải 100–500 đồng thời/50.000 file. Cần PostgreSQL, queue phân tán, renderer isolation, MFA, multipart upload, media preview, monitoring và independent backup trước khi nghiệm thu đầy đủ. Không có SLA/deadline tự đặt. HRM, thanh toán và chỉnh sửa Office online không được tự thêm vào phạm vi.
+
+## Link trải nghiệm công khai
+
+Đã có `Dockerfile` và [hướng dẫn triển khai demo trên Render/Railway/VPS](docs/public-demo.md). Cần kết nối hosting để được cấp URL HTTPS; GitHub repository và server local không tự tạo link công khai. Demo phải dùng dữ liệu mẫu riêng, không kết nối dữ liệu production khi tính năng đổi vai trò công khai đang bật.

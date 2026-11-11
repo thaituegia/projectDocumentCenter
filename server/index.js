@@ -1834,7 +1834,10 @@ app.use((err, req, res, next) => {
 });
 export async function start() {
   await seed();
-  if (process.env.NODE_ENV !== "production") {
+  if (
+    process.env.NODE_ENV !== "production" &&
+    process.env.SERVE_BUILD !== "true"
+  ) {
     const { createServer } = await import("vite");
     const vite = await createServer({
       server: {
@@ -1845,6 +1848,11 @@ export async function start() {
     });
     app.use(vite.middlewares);
   } else {
+    if (!fs.existsSync(path.resolve("dist/index.html"))) {
+      throw new Error(
+        "Chưa có bản build. Chạy npm run build trước khi khởi động.",
+      );
+    }
     app.use(express.static(path.resolve("dist")));
     app.get("/{*path}", (req, res) =>
       res.sendFile(path.resolve("dist/index.html")),

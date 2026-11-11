@@ -10,7 +10,8 @@
     "test": "node --test tests/*.test.js",
     "worker": "node server/worker.js",
     "test:e2e": "playwright test",
-    "test:production": "node scripts/smoke-production.mjs"
+    "test:production": "node scripts/smoke-production.mjs",
+    "preview": "SERVE_BUILD=true node server/index.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.922.0",

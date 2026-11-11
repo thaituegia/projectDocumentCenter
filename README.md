@@ -14,6 +14,15 @@ npm run dev
 
 Máy chủ web + API chạy cổng `3000`, nghe trên `0.0.0.0`. Dev server tự tạo dữ liệu minh họa khi database trống. Bản dev đăng nhập trải nghiệm Super Admin ở lần mở đầu của phiên trình duyệt. Menu tài khoản cho phép đổi giữa 6 vai trò minh họa hoặc đăng xuất để kiểm tra Guest. Đây là đường đăng nhập **chỉ tồn tại ở development/test**, trả 404 trong production. Mật khẩu seed sinh ngẫu nhiên, không hardcode mật khẩu chung.
 
+Để trải nghiệm đúng bản đã build với dữ liệu/tài khoản minh họa:
+
+```bash
+npm run build
+npm run preview
+```
+
+Lệnh `preview` phục vụ file trong `dist` và backend trên cùng cổng 3000, giữ chế độ demo khi `NODE_ENV` không phải production. Lệnh này không tự tạo URL công khai. Dừng dev server đang dùng cổng 3000 trước khi chạy preview. `npm start` vẫn là chế độ production, không có tài khoản demo.
+
 Khởi động worker riêng khi cần xử lý hàng đợi:
 
 ```bash

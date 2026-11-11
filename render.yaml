@@ -8,9 +8,30 @@ services:
     dockerContext: .
     healthCheckPath: /api/health
     envVars:
+      - key: SITE_MODE
+        value: internal
+      - key: PORT
+        value: "10000"
       - key: NODE_ENV
         value: development
       - key: SERVE_BUILD
         value: "true"
       - key: DATA_DIR
         value: /tmp/bacnhabook-demo
+  - type: web
+    name: bacnhabook-hoc-lieu
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: SITE_MODE
+        value: customer
+      - key: NODE_ENV
+        value: development
+      - key: SERVE_BUILD
+        value: "true"
+      - key: INTERNAL_API_URL
+        sync: false

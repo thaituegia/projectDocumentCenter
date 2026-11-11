@@ -37,7 +37,14 @@ import {
 } from "./authz.js";
 import { putObject, getObject, remote } from "./storage.js";
 import { encryptMail } from "./mail.js";
+import { customerResourceCheck, roleAllowed, sessionCookie } from "./portal.js";
 export const app = express();
+app.use((req, res, next) => {
+  req.portal = req.url.startsWith("/api/customer/") ? "customer" : "internal";
+  if (req.portal === "customer")
+    req.url = req.url.replace(/^\/api\/customer/, "/api");
+  next();
+});
 app.disable("x-powered-by");
 app.set("trust proxy", "loopback");
 app.use((req, res, next) => {
@@ -58,18 +65,22 @@ app.use("/api", (req, res, next) => {
   );
   if (
     process.env.NODE_ENV === "production" &&
-    cookies.bacnha_session?.startsWith("demo_")
+    cookies[sessionCookie(req.portal)]?.startsWith("demo_")
   )
-    delete cookies.bacnha_session;
+    delete cookies[sessionCookie(req.portal)];
   const session =
-    cookies.bacnha_session &&
-    one("SELECT * FROM sessions WHERE id=?", cookies.bacnha_session);
+    cookies[sessionCookie(req.portal)] &&
+    one(
+      "SELECT * FROM sessions WHERE id=?",
+      cookies[sessionCookie(req.portal)],
+    );
   if (session) {
     const user = one("SELECT * FROM users WHERE id=?", session.user_id);
     const idle = setting("idle_minutes", 30) * 60000;
     if (
       !user ||
       user.status !== "active" ||
+      !roleAllowed(req.portal, user) ||
       (process.env.NODE_ENV === "production" &&
         ["SUPER_ADMIN", "BOOK_ADMIN", "HR_ADMIN", "MANAGER"].includes(
           user.role,
@@ -113,6 +124,36 @@ app.use("/api", (req, res, next) => {
     });
   next();
 });
+app.use("/api", customerResourceCheck);
+app.get("/api/site", (req, res) =>
+  res.json({
+    portal: req.portal,
+    name:
+      req.portal === "customer"
+        ? "Bác Nhã Book · Học liệu"
+        : "Bác Nhã Book · Quản trị & Nội bộ",
+    development: process.env.NODE_ENV !== "production",
+  }),
+);
+app.use("/api", (req, res, next) => {
+  if (
+    req.portal === "internal" &&
+    !req.user &&
+    ![
+      "/health",
+      "/site",
+      "/auth/me",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/auth/reset-password",
+      "/dev/session",
+    ].includes(req.path)
+  )
+    return res
+      .status(401)
+      .json({ error: "Vui lòng đăng nhập website quản trị & nội bộ." });
+  next();
+});
 const auth = (req, res, next) =>
   req.user
     ? next()
@@ -154,7 +195,7 @@ function sessionFor(res, user, demo = false) {
     csrf: crypto.randomBytes(24).toString("hex"),
   };
   insert("sessions", session);
-  res.cookie("bacnha_session", session.id, {
+  res.cookie(sessionCookie(res.req.portal), session.id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -231,6 +272,7 @@ app.get("/api/auth/me", (req, res) =>
     user: publicUser(req.user),
     csrf: req.session?.csrf,
     development: process.env.NODE_ENV !== "production",
+    portal: req.portal,
   }),
 );
 app.post("/api/dev/session", (req, res) => {
@@ -240,6 +282,8 @@ app.post("/api/dev/session", (req, res) => {
     req.body.userId || "admin",
   );
   if (!user) return res.sendStatus(404);
+  if (!roleAllowed(req.portal, user))
+    return res.status(403).json({ error: "Tài khoản này thuộc website khác." });
   if (req.session) run("DELETE FROM sessions WHERE id=?", req.session.id);
   audit(user, "DEMO_LOGIN", null);
   res.json(sessionFor(res, user, true));
@@ -272,6 +316,13 @@ app.post(
         .status(401)
         .json({ error: "Email hoặc mật khẩu không chính xác." });
     }
+    if (!roleAllowed(req.portal, user))
+      return res.status(403).json({
+        error:
+          req.portal === "customer"
+            ? "Vui lòng dùng website quản trị & nội bộ cho tài khoản này."
+            : "Tài khoản khách hàng đăng nhập tại website học liệu Bác Nhã Book.",
+      });
     if (
       ["SUPER_ADMIN", "BOOK_ADMIN", "HR_ADMIN", "MANAGER"].includes(
         user.role,
@@ -296,7 +347,7 @@ app.post(
 );
 app.post("/api/auth/logout", auth, (req, res) => {
   run("DELETE FROM sessions WHERE id=?", req.session.id);
-  res.clearCookie("bacnha_session", { path: "/" });
+  res.clearCookie(sessionCookie(req.portal), { path: "/" });
   res.json({ ok: true });
 });
 app.post(
@@ -352,7 +403,7 @@ app.post("/api/auth/forgot-password", recoveryLimit, (req, res) => {
       .trim()
       .toLowerCase(),
   );
-  if (user) {
+  if (user && roleAllowed(req.portal, user)) {
     const token = crypto.randomBytes(32).toString("hex");
     insert("password_resets", {
       token_hash: crypto.createHash("sha256").update(token).digest("hex"),
@@ -396,7 +447,13 @@ app.post(
       hash,
       now(),
     );
-    if (!reset)
+    if (
+      !reset ||
+      !roleAllowed(
+        req.portal,
+        one("SELECT * FROM users WHERE id=?", reset.user_id),
+      )
+    )
       return res
         .status(400)
         .json({ error: "Liên kết đã hết hạn hoặc đã được sử dụng." });
@@ -412,7 +469,14 @@ app.post(
 app.get("/api/repositories", (req, res) =>
   res.json(
     all("SELECT * FROM repositories")
-      .filter((r) => visibleRepo(req.user, r))
+      .filter(
+        (r) =>
+          visibleRepo(req.user, r) &&
+          (req.portal !== "customer" || r.type === "BACNHABOOK") &&
+          (req.portal !== "internal" ||
+            req.user?.role !== "EMPLOYEE" ||
+            r.type !== "BACNHABOOK"),
+      )
       .map((r) => ({
         ...r,
         can_manage: canManage(req.user, { repository_id: r.id }),
@@ -429,7 +493,14 @@ app.get("/api/repositories", (req, res) =>
 );
 app.get("/api/folders", (req, res) => {
   const allowed = all("SELECT * FROM repositories")
-    .filter((r) => visibleRepo(req.user, r))
+    .filter(
+      (r) =>
+        visibleRepo(req.user, r) &&
+        (req.portal !== "customer" || r.type === "BACNHABOOK") &&
+        (req.portal !== "internal" ||
+          req.user?.role !== "EMPLOYEE" ||
+          r.type !== "BACNHABOOK"),
+    )
     .map((r) => r.id);
   res.json(
     all("SELECT * FROM folders WHERE deleted_at IS NULL")
@@ -439,14 +510,25 @@ app.get("/api/folders", (req, res) => {
           !ancestry(f.id).some((a) => a.deleted_at),
       )
       .map((f) => ({
-        ...f,
+        ...(req.portal === "customer"
+          ? {
+              id: f.id,
+              name: f.name,
+              repository_id: f.repository_id,
+              parent_id: f.parent_id,
+              description: f.description,
+            }
+          : f),
         can_manage: canManage(req.user, f),
-        approvers: approvers(f.id),
-        metadata_schema: schema(f.id),
-        inherits_approvers: f.approvers === null,
+        approvers: req.portal === "customer" ? undefined : approvers(f.id),
+        metadata_schema: req.portal === "customer" ? undefined : schema(f.id),
+        inherits_approvers:
+          req.portal === "customer" ? undefined : f.approvers === null,
         file_count: all(
-          "SELECT id FROM documents WHERE folder_id=? AND deleted_at IS NULL",
+          "SELECT id,publication FROM documents WHERE folder_id=? AND deleted_at IS NULL",
           f.id,
+        ).filter(
+          (d) => req.portal !== "customer" || d.publication === "PUBLISHED",
         ).length,
       })),
   );
@@ -620,7 +702,14 @@ app.get("/api/documents", (req, res) => {
     .toLowerCase();
   let docs = all("SELECT * FROM documents WHERE deleted_at IS NULL");
   const allowed = all("SELECT * FROM repositories")
-    .filter((r) => visibleRepo(req.user, r))
+    .filter(
+      (r) =>
+        visibleRepo(req.user, r) &&
+        (req.portal !== "customer" || r.type === "BACNHABOOK") &&
+        (req.portal !== "internal" ||
+          req.user?.role !== "EMPLOYEE" ||
+          r.type !== "BACNHABOOK"),
+    )
     .map((r) => r.id);
   docs = docs.filter(
     (d) =>
@@ -1199,7 +1288,13 @@ app.get("/api/access-requests", auth, (req, res) =>
     all(
       "SELECT r.*,u.name as user_name,u.email,d.name as document_name,d.folder_id FROM access_requests r JOIN users u ON u.id=r.user_id JOIN documents d ON d.id=r.document_id ORDER BY r.created_at DESC",
     )
-      .filter((r) => r.user_id === req.user.id || canManage(req.user, r))
+      .filter(
+        (r) =>
+          (r.user_id === req.user.id || canManage(req.user, r)) &&
+          (req.portal !== "customer" ||
+            one("SELECT type FROM repositories WHERE id=?", repoFor(r))
+              ?.type === "BACNHABOOK"),
+      )
       .map((r) => ({ ...r, can_review: canManage(req.user, r) })),
   ),
 );

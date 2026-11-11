@@ -85,14 +85,8 @@ import {
   Notifications,
   Viewer,
 } from "./pages";
-import "@fontsource/be-vietnam-pro/vietnamese-400.css";
-import "@fontsource/be-vietnam-pro/vietnamese-500.css";
-import "@fontsource/be-vietnam-pro/vietnamese-600.css";
-import "@fontsource/be-vietnam-pro/latin-400.css";
-import "@fontsource/be-vietnam-pro/latin-500.css";
-import "@fontsource/be-vietnam-pro/latin-600.css";
-import "@fontsource/libre-caslon-display/latin-400.css";
 import "./styles.css";
+import "./internal.css";
 function App() {
   const [user, setUser] = useState(null),
     [ready, setReady] = useState(false),
@@ -164,6 +158,7 @@ function App() {
           sessionStorage.setItem("bacnha-visited", "yes");
         }
         setUser(me.user);
+        if (me.user?.role === "EMPLOYEE") setRepo("common");
         setCsrf(me.csrf);
       } catch (e) {
         setError(e.message);
@@ -352,6 +347,7 @@ function App() {
   };
   const onAuthenticated = (me) => {
     setUser(me.user);
+    setRepo(me.user?.role === "EMPLOYEE" ? "common" : "books");
     setCsrf(me.csrf);
     setModal(null);
     setProfileOpen(false);
@@ -386,8 +382,36 @@ function App() {
         <Loading />
       </div>
     );
+  if (!user)
+    return (
+      <div className="internal-login">
+        <div className="internal-login-card">
+          <div className="internal-login-brand">
+            <BookOpen size={28} />
+            <strong>Bác Nhã Book</strong>
+            <span>QUẢN TRỊ & NỘI BỘ</span>
+          </div>
+          <h1>Không gian làm việc nội bộ</h1>
+          <p>Dành cho quản trị viên và nhân viên được cấp tài khoản.</p>
+          <LoginDialog onAuthenticated={onAuthenticated} say={say} />
+          {development && (
+            <div className="demo-login">
+              <span>TÀI KHOẢN TRẢI NGHIỆM NỘI BỘ</span>
+              <div>
+                <Button kind="secondary" onClick={() => switchRole("admin")}>
+                  Quản trị viên
+                </Button>
+                <Button kind="secondary" onClick={() => switchRole("employee")}>
+                  Nhân viên
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   return (
-    <div className="app-shell">
+    <div className="app-shell internal-site">
       {mobile && (
         <div className="sidebar-scrim" onClick={() => setMobile(false)} />
       )}
@@ -405,13 +429,13 @@ function App() {
           </span>
           <span>
             bacnhabook<span className="brand-dot">.</span>
-            <small>KHÔNG GIAN TRI THỨC</small>
+            <small>QUẢN TRỊ & NỘI BỘ</small>
           </span>
         </a>
         <div className="workspace-label">
           <span className="workspace-icon">B</span>
           <div>
-            Bacnhabook Workspace
+            Quản trị & Nội bộ
             <small>
               {development ? "Không gian trải nghiệm" : "Trung tâm tài liệu"}
             </small>
@@ -623,7 +647,6 @@ function App() {
                           ["hr-admin", "HCNS"],
                           ["manager", "Quản lý Marketing"],
                           ["employee", "Nhân viên"],
-                          ["customer", "Khách hàng"],
                         ].map(([id, label]) => (
                           <button key={id} onClick={() => switchRole(id)}>
                             {label}
@@ -701,7 +724,7 @@ function App() {
               <div className="page-heading">
                 <div>
                   <div className="eyebrow">
-                    <span /> THƯ VIỆN SỐ BACNHABOOK
+                    <span /> KHÔNG GIAN QUẢN TRỊ & NỘI BỘ
                   </div>
                   <h1>
                     {favorites
@@ -741,51 +764,6 @@ function App() {
                   )}
                 </div>
               </div>
-              {!favorites &&
-                !folder &&
-                !query &&
-                page !== "/recent" &&
-                repo === "books" && (
-                  <section className="library-hero">
-                    <div className="hero-copy">
-                      <span className="hero-eyebrow">
-                        <span /> HỌC LIỆU CHÍNH THỨC TỪ BACNHABOOK
-                      </span>
-                      <h2>
-                        Mở trang sách mới,
-                        <br />
-                        chạm đến <em>chân trời mới.</em>
-                      </h2>
-                      <p>
-                        Một nơi cho mọi hành trình học tập. Khám phá học liệu,
-                        <br className="desktop-break" /> nuôi dưỡng cảm hứng và
-                        tiến bộ mỗi ngày.
-                      </p>
-                      <button
-                        className="hero-link"
-                        onClick={() => {
-                          setFolder("hsk1");
-                          document
-                            .getElementById("document-section")
-                            ?.scrollIntoView({
-                              behavior: "smooth",
-                              block: "start",
-                            });
-                        }}
-                      >
-                        Khám phá học liệu HSK 1{" "}
-                        <span>
-                          <ArrowUpRight size={18} />
-                        </span>
-                      </button>
-                      <div className="hero-footnote">
-                        <ShieldCheck size={15} />
-                        Học liệu chọn lọc<span>·</span>Cập nhật thường xuyên
-                      </div>
-                    </div>
-                    <BookArt />
-                  </section>
-                )}
               {!favorites && !folder && !query && (
                 <div className="library-overview">
                   <div>

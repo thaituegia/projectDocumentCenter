@@ -1,5 +1,7 @@
 # Nghiên cứu tài liệu và các quyết định còn mở
 
+**Cập nhật theo yêu cầu trực tiếp mới của người dùng:** tách website học liệu Bác Nhã Book và website quản trị + nội bộ thành hai địa chỉ Render. Hai website dùng chung dữ liệu qua API nhưng phiên, role và giao diện riêng; thay thế quyết định một website nhiều vai trò trước đây. Chi tiết tại `two-websites.md`.
+
 Đã đọc PRD v1.0, backlog DOCX, implementation pack và JSON 63 story / 189 AC. PRD quy định một release đầy đủ BR-01–BR-38; P0/P1/P2 chỉ là thứ tự dependency, không phải quyền cắt phạm vi. Hướng dẫn trong implementation pack được xem là đề xuất kỹ thuật, phân biệt với yêu cầu trực tiếp của người dùng là dựng website. Người dùng đã xác nhận có R2/email và sẽ cấu hình sau.
 
 ## Cách diễn giải đang thực thi trong bản dev

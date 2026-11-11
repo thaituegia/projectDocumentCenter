@@ -53,19 +53,19 @@ test("Create a folder and see server-persisted data after reload", async ({
   await page.reload();
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
 });
-test("Customer receives access denied and can send an access request", async ({
+test("Customer website has its own login and access request journey", async ({
   page,
 }) => {
-  await page.goto("/");
-  await page.locator(".profile").click();
+  await page.goto("http://127.0.0.1:3003/");
   await page
-    .locator(".profile-dropdown")
-    .getByRole("button", { name: "Khách hàng", exact: true })
+    .getByRole("button", { name: "Dùng tài khoản học viên mẫu" })
     .click();
-  await expect(page.locator(".profile-name")).toContainText("Nguyễn An");
+  await expect(page.locator(".customer-profile")).toContainText("Nguyễn An");
   await page
-    .locator(".document-name")
-    .filter({ hasText: "Ngữ pháp HSK 3 – Tổng hợp kiến thức" })
+    .getByRole("button", {
+      name: "Ngữ pháp HSK 3 – Tổng hợp kiến thức",
+      exact: true,
+    })
     .click();
   await expect(
     page.getByRole("heading", { name: "Bạn chưa có quyền truy cập" }),
@@ -79,6 +79,7 @@ test("Customer receives access denied and can send an access request", async ({
   await page.getByRole("button", { name: "Gửi yêu cầu", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("đã có một yêu cầu");
 });
+
 test("Dashboard, people, audit and settings pages render real data", async ({
   page,
 }) => {
@@ -158,7 +159,7 @@ test("Role switch hides admin menus; API still enforces scope", async ({
   await page.locator(".profile").click();
   await page
     .locator(".profile-dropdown")
-    .getByRole("button", { name: "Khách hàng", exact: true })
+    .getByRole("button", { name: "Nhân viên", exact: true })
     .click();
   await expect(
     page.getByRole("button", { name: "Tổng quan", exact: true }),
@@ -222,4 +223,134 @@ test("File upload creates a real queued record and reports safe pending state", 
   await expect(
     page.getByRole("heading", { name: "Chưa có bản xem trước" }),
   ).toBeVisible();
+});
+
+test("Separate websites keep sessions isolated and show shared document updates", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  await expect(page.locator(".profile-name")).toContainText("Minh Anh");
+  const customerPage = await context.newPage();
+  await customerPage.goto("http://127.0.0.1:3003/");
+  await expect(
+    customerPage.getByRole("button", { name: "Dùng tài khoản học viên mẫu" }),
+  ).toBeVisible();
+  await customerPage
+    .getByRole("button", { name: "Dùng tài khoản học viên mẫu" })
+    .click();
+  await expect(customerPage.locator(".customer-profile")).toContainText(
+    "Nguyễn An",
+  );
+  await page.reload();
+  await expect(page.locator(".profile-name")).toContainText("Minh Anh");
+  const me = await (await page.request.get("/api/auth/me")).json();
+  const original = await (await page.request.get("/api/documents/d1")).json();
+  const text = "Học liệu dùng chung giữa hai website — dấu tiếng Việt đầy đủ.";
+  const changed = await page.request.patch("/api/documents/d1", {
+    headers: { "X-CSRF-Token": me.csrf },
+    data: { description: text },
+  });
+  expect(changed.ok()).toBeTruthy();
+  const shared = await customerPage.request.get(
+    "http://127.0.0.1:3003/api/documents/d1",
+  );
+  expect((await shared.json()).description).toBe(text);
+  await page.request.patch("/api/documents/d1", {
+    headers: { "X-CSRF-Token": me.csrf },
+    data: { description: original.description },
+  });
+});
+
+test("Customer website cannot call administrative routes or read internal repositories", async ({
+  page,
+}) => {
+  await page.goto("http://127.0.0.1:3003/");
+  await expect(page.locator(".customer-header")).toBeVisible();
+  await expect(page.locator(".sidebar")).toHaveCount(0);
+  for (const endpoint of [
+    "users",
+    "audit",
+    "settings",
+    "approvals",
+    "uploads",
+  ]) {
+    const r = await page.request.get("http://127.0.0.1:3003/api/" + endpoint);
+    expect(r.status()).toBe(403);
+  }
+  const repos = await (
+    await page.request.get("http://127.0.0.1:3003/api/repositories")
+  ).json();
+  expect(repos.map((r) => r.type)).toEqual(["BACNHABOOK"]);
+  const internal = await page.request.get(
+    "http://127.0.0.1:3003/api/documents/d11/preview",
+  );
+  expect(internal.status()).toBe(404);
+  await page.goto("http://127.0.0.1:3003/dashboard");
+  await expect(
+    page.getByRole("heading", { name: "Không tìm thấy trang học liệu" }),
+  ).toBeVisible();
+  await expect(page.locator(".stats-grid")).toHaveCount(0);
+});
+
+test("Vietnamese regular and italic headings load complete fonts on desktop and mobile", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("http://127.0.0.1:3003/");
+  const heading = page.locator(".customer-hero h1");
+  await expect(heading).toContainText("Mở trang sách mới,");
+  await expect(heading).toContainText("chạm đến chân trời mới.");
+  await page.evaluate(() => document.fonts.ready);
+  await expect(
+    page.locator(".customer-document-grid .document-card"),
+  ).toHaveCount(8);
+  const font = await heading.evaluate((el) => getComputedStyle(el).fontFamily);
+  expect(font).toContain("Noto Serif");
+  expect(
+    await page.evaluate(() =>
+      document.fonts.check(
+        '400 24px "Noto Serif"',
+        "Mở chạm đến trời mới học liệu tiếng Việt",
+      ),
+    ),
+  ).toBeTruthy();
+  expect(
+    await page.evaluate(() =>
+      document.fonts.check('italic 400 24px "Noto Serif"', "chân trời mới"),
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: "test-results/customer-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(heading).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    390,
+  );
+  await page.screenshot({
+    path: "test-results/customer-mobile.png",
+    fullPage: true,
+  });
+  expect(errors).toEqual([]);
+});
+
+test("Internal website has a distinct login wall after logout", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator(".profile").click();
+  await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Không gian làm việc nội bộ" }),
+  ).toBeVisible();
+  await expect(page.locator(".app-shell")).toHaveCount(0);
+  await expect(page.locator(".customer-hero")).toHaveCount(0);
+  await page.screenshot({
+    path: "test-results/internal-login.png",
+    fullPage: true,
+  });
 });

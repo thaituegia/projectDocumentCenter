@@ -4,19 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server/index.js",
+    "dev": "node server/launch.js",
     "build": "vite build",
-    "start": "NODE_ENV=production node server/index.js",
+    "start": "NODE_ENV=production node server/launch.js",
     "test": "node --test tests/*.test.js",
     "worker": "node server/worker.js",
     "test:e2e": "playwright test",
     "test:production": "node scripts/smoke-production.mjs",
-    "preview": "SERVE_BUILD=true node server/index.js"
+    "preview": "SERVE_BUILD=true node server/launch.js",
+    "dev:customer": "SITE_MODE=customer PORT=3003 INTERNAL_API_URL=http://127.0.0.1:3000 node server/launch.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.922.0",
     "@fontsource/be-vietnam-pro": "^5.3.0",
-    "@fontsource/libre-caslon-display": "^5.3.0",
+    "@fontsource/noto-serif": "^5.3.0",
     "bcryptjs": "^3.0.2",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",

@@ -1,0 +1,74 @@
+.internal-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: radial-gradient(ellipse at 30% 10%, #eaf0e1, #f8faf4);
+}
+.internal-login-card {
+  width: 465px;
+  max-width: 100%;
+  background: #fffefb;
+  padding: 35px;
+  border: 1px solid #dfe8d4;
+  border-radius: 14px;
+  box-shadow: 0 14px 55px #23412a0a;
+}
+.internal-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #58774a;
+}
+.internal-login-brand strong {
+  font-size: 22px;
+  letter-spacing: -0.7px;
+  font-weight: 600;
+}
+.internal-login-brand span {
+  display: block;
+  width: 100%;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #9aab88;
+  margin-top: 4px;
+}
+.internal-login-card h1 {
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.7;
+  margin-top: 29px;
+  color: #496a3d;
+}
+.internal-login-card > p {
+  font-size: 10px;
+  color: #a1b18f;
+  line-height: 1.9;
+  margin: 10px 0 25px;
+}
+.internal-site .workspace-label {
+  font-size: 11px;
+}
+@media (max-width: 520px) {
+  .internal-login {
+    padding: 20px 16px;
+  }
+  .internal-login-card {
+    padding: 28px 23px;
+  }
+  .internal-login-card h1 {
+    font-size: 22px;
+  }
+  .internal-login-brand strong {
+    font-size: 21px;
+  }
+  .internal-login-card > p {
+    font-size: 9px;
+  }
+  .internal-login-brand span {
+    font-size: 7px;
+  }
+}

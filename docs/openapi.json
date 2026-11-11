@@ -15,7 +15,12 @@
       "cookieSession": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "bacnha_session"
+        "name": "bacnha_internal_session"
+      },
+      "customerSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "bacnha_customer_session"
       }
     }
   },
@@ -55,10 +60,7 @@
           }
         },
         "security": [
-          {},
-          {
-            "cookieSession": []
-          }
+          {}
         ]
       }
     },
@@ -107,10 +109,7 @@
           }
         },
         "security": [
-          {},
-          {
-            "cookieSession": []
-          }
+          {}
         ],
         "requestBody": {
           "content": {
@@ -288,10 +287,7 @@
           }
         },
         "security": [
-          {},
-          {
-            "cookieSession": []
-          }
+          {}
         ],
         "requestBody": {
           "content": {
@@ -349,10 +345,7 @@
           }
         },
         "security": [
-          {},
-          {
-            "cookieSession": []
-          }
+          {}
         ],
         "requestBody": {
           "content": {
@@ -400,7 +393,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -442,7 +434,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -492,7 +483,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -736,7 +726,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -787,7 +776,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -845,7 +833,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -912,7 +899,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -963,7 +949,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -1014,7 +999,6 @@
           }
         },
         "security": [
-          {},
           {
             "cookieSession": []
           }
@@ -2820,9 +2804,952 @@
           }
         },
         "security": [
+          {}
+        ]
+      }
+    },
+    "/customer/auth/me": {
+      "get": {
+        "summary": "GET /auth/me",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
           {},
           {
-            "cookieSession": []
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/auth/login": {
+      "post": {
+        "summary": "POST /auth/login",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/auth/logout": {
+      "post": {
+        "summary": "POST /auth/logout",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/auth/change-password": {
+      "post": {
+        "summary": "POST /auth/change-password",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/auth/forgot-password": {
+      "post": {
+        "summary": "POST /auth/forgot-password",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/auth/reset-password": {
+      "post": {
+        "summary": "POST /auth/reset-password",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/repositories": {
+      "get": {
+        "summary": "GET /repositories",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "repositories"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/folders": {
+      "get": {
+        "summary": "GET /folders",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/documents": {
+      "get": {
+        "summary": "GET /documents",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/documents/{id}": {
+      "get": {
+        "summary": "GET /documents/{id}",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/documents/{id}/preview": {
+      "get": {
+        "summary": "GET /documents/{id}/preview",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/documents/{id}/download": {
+      "get": {
+        "summary": "GET /documents/{id}/download",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/documents/{id}/favorite": {
+      "post": {
+        "summary": "POST /documents/{id}/favorite",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/documents/{id}/access-requests": {
+      "post": {
+        "summary": "POST /documents/{id}/access-requests",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/access-requests": {
+      "get": {
+        "summary": "GET /access-requests",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "access-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/notifications": {
+      "get": {
+        "summary": "GET /notifications",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "notifications"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
+          }
+        ]
+      }
+    },
+    "/customer/notifications/read": {
+      "patch": {
+        "summary": "PATCH /notifications/read",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "notifications"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "customerSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/health": {
+      "get": {
+        "summary": "GET /health",
+        "description": "Namespace học liệu của backend; chỉ kho BACNHABOOK, chỉ Customer/Guest. Website học liệu proxy từ /api sang namespace này.",
+        "tags": [
+          "health"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "customerSession": []
           }
         ]
       }

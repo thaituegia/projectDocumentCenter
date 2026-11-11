@@ -273,7 +273,7 @@ a svg {
   color: #bba77c;
 }
 .knowledge-note p {
-  font-family: Georgia, "Be Vietnam Pro", serif;
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
   font-size: 10px;
   line-height: 1.9;
   font-weight: 400;
@@ -692,7 +692,7 @@ a svg {
   background: #a3ae83;
 }
 .hero-copy h2 {
-  font-family: "Libre Caslon Display", Georgia, "Times New Roman", serif;
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
   font-weight: 400;
   font-size: 35px;
   letter-spacing: -0.7px;
@@ -1596,7 +1596,7 @@ a svg {
   color: #96a27e;
 }
 .mini-document > strong {
-  font-family: Georgia, serif;
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
   font-size: 10px;
   line-height: 1.4;
   text-align: center;
@@ -3052,7 +3052,7 @@ a svg {
   margin: 19px 0 30px;
 }
 .preview-paper h2 {
-  font-family: Georgia, serif;
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
   font-size: 1.8em;
   font-weight: 400;
   line-height: 1.4;
@@ -3185,7 +3185,7 @@ a svg {
   letter-spacing: 1px;
 }
 .viewer-empty h2 {
-  font-family: Georgia, serif;
+  font-family: "Noto Serif", "Be Vietnam Pro", serif;
   font-size: 26px;
   color: #6e895b;
   font-weight: 400;

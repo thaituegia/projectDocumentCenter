@@ -48,8 +48,8 @@ try {
   const me = await (await fetch(base + "/api/auth/me")).json();
   assert.equal(me.user, null);
   assert.equal(me.development, false);
-  const repos = await (await fetch(base + "/api/repositories")).json();
-  assert.equal(repos.length, 0);
+  const repos = await fetch(base + "/api/repositories");
+  assert.equal(repos.status, 401);
   console.log(
     "Production smoke PASS: static bundle, DB health, no demo login, no demo seed, guest session.",
   );

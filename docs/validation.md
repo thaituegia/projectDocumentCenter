@@ -5,19 +5,19 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 | Lệnh / kiểm tra | Kết quả | Giới hạn |
 |---|---|---|
 | `npm run build` | PASS, Vite tạo bundle tĩnh, font tiếng Việt local | Không xác nhận deployment/UAT |
-| `npm test` | PASS, Node báo 39/39 gồm **38 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
-| `npm run test:e2e` | PASS, **9/9** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
+| `npm test` | PASS, Node báo 43/43 gồm **42 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
+| `npm run test:e2e` | PASS, **13/13** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
 | `npm run test:production` | PASS | Chỉ smoke mode production với DB mới: bundle, health, no demo login/seed/session; chưa production-ready |
 | `npm audit --omit=dev` | PASS, 0 vulnerabilities tại thời điểm chạy | Không thay security review; phụ thuộc cần kiểm tra lại định kỳ |
-| Desktop screenshot | 1440×1080 viewport, full page; không pageerror/console error | [Ảnh desktop](screenshots/library-desktop.png) |
-| Mobile screenshot | 390×844 viewport, full page; scrollWidth=390, viewport=390 | [Ảnh mobile](screenshots/library-mobile.png) |
+| Desktop screenshot | 1440×1080 viewport, full page; không pageerror/console error | [Học liệu desktop](screenshots/customer-desktop.png) |
+| Mobile screenshot | 390×844 viewport, full page; scrollWidth=390, viewport=390 | [Học liệu mobile](screenshots/customer-mobile.png) |
 | Backup/restore local | PASS: SHA-256 DB/objects, integrity check, document/grant counts, restore mới, phát hiện object hỏng | Chưa kiểm tra provider độc lập/off-site/R2 |
 
 ## Tình huống API đã chạy
 
 Guest listing filename nhưng không nhận metadata nhạy cảm; public preview được phép; private preview 403; VIEW-only không original; DOWNLOAD cần flag + ACL; Deny ancestor; grant expired/future; department membership; admin ngoài scope; chống nâng role; search không leak nội dung; CSRF; folder duplicate/cycle/scope; soft-delete subtree; favorites; request idempotency và grant sau approve; tạo account hash + encrypted outbox; duplicate không reset password/email; bắt đổi mật khẩu lần đầu; khóa user revoke session; reviewer/self-approval/reject reason; nested upload pending_scan; scanner thiếu cấu hình fail closed; date validation; soft restore; Excel preview/commit idempotency; own notifications; audit/dashboard scope; version restore scope; password recovery one-time; idle/concurrency; backup/restore checksum; malformed origin; production từ chối demo; logout revoke.
 
-## 9 hành trình browser
+## 13 hành trình browser
 
 1. Thư viện → grid/list → preview/watermark → bộ sưu tập.
 2. Search → kết quả → empty state → lọc âm thanh.
@@ -28,6 +28,11 @@ Guest listing filename nhưng không nhận metadata nhạy cảm; public previe
 7. Chuyển role → ẩn menu không thuộc scope + gọi API bị từ chối thật.
 8. Sửa mô tả tài liệu → server lưu → mở lại → permission editor thấy quyền kế thừa.
 9. Upload file thật → record tồn tại → chờ scan → không phát hành preview.
+
+10. Hai website chạy khác origin/port, cookie độc lập; admin cập nhật → học viên đọc dữ liệu mới.
+11. Website học viên không có sidebar quản trị, không gọi được API nội bộ, không đọc tài liệu HCNS.
+12. Noto Serif regular/italic tải đủ ký tự tiếng Việt, screenshot desktop/mobile, không tràn ngang.
+13. Website nội bộ có trang đăng nhập riêng khi đăng xuất, không hiển thị thư viện Guest.
 
 ## Chưa được kiểm chứng / chưa đủ release
 
@@ -42,4 +47,10 @@ Không dùng các kết quả local để tuyên bố đạt BR-38, BR-37 hoặc
 
 ## Cấu hình triển khai Render demo
 
-Docker multi-stage đã build thành công với TLS verification giữ nguyên. Container chạy non-root, tạo database/objects minh họa vào `/tmp`, health API trả OK; Chromium xác nhận auto-login demo, thư viện và document preview không có pageerror. `render.yaml` khai báo một web service free tại Singapore. Chưa deploy lên tài khoản Render, chưa có URL HTTPS công khai để xác nhận.
+Docker multi-stage đã build thành công với TLS verification giữ nguyên. Container chạy non-root, tạo database/objects minh họa vào `/tmp`, health API trả OK; Chromium xác nhận auto-login demo, thư viện và document preview không có pageerror. `render.yaml` hiện khai báo hai web service free tại Singapore theo yêu cầu mới. Chưa deploy lên tài khoản Render, chưa có URL HTTPS công khai để xác nhận.
+
+## Kiểm chứng bổ sung: hai website
+
+Đã build và chạy hai container riêng trên Docker network riêng: backend nội bộ giữ DB và gateway học liệu kết nối backend qua HTTP. Chromium xác nhận 8 học liệu Published trên website học liệu, phiên riêng, cập nhật từ admin phản ánh ngay, `/api/users` phía học viên bị 403. Đã kiểm tra font Noto Serif regular/italic với chuỗi tiếng Việt và ảnh desktop/mobile. Ảnh [đăng nhập nội bộ](screenshots/internal-login.png), [workspace nội bộ](screenshots/internal-workspace.png).
+
+`render.yaml` hiện khai báo hai service Free. Phải Sync/Apply Blueprint và nhập URL HTTPS backend thực tế ở `INTERNAL_API_URL`; chưa có URL hoặc quyền truy cập Render để xác nhận deploy. Các kết quả container không được ghi là đã xuất bản hai URL Render.

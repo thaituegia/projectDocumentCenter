@@ -16,7 +16,7 @@ await seed();
 const server = app.listen(0, "127.0.0.1");
 await new Promise((resolve) => server.once("listening", resolve));
 const base = `http://127.0.0.1:${server.address().port}/api`;
-function client() {
+function client(portal = "internal") {
   let cookie = "",
     csrf = "";
   return {
@@ -26,16 +26,19 @@ function client() {
       if (csrf) headers["X-CSRF-Token"] = csrf;
       if (options.body && !(options.body instanceof FormData))
         headers["Content-Type"] = "application/json";
-      const res = await fetch(base + url, {
-        ...options,
-        headers,
-        body:
-          options.body instanceof FormData
-            ? options.body
-            : options.body
-              ? JSON.stringify(options.body)
-              : undefined,
-      });
+      const res = await fetch(
+        base + (portal === "customer" ? "/customer" : "") + url,
+        {
+          ...options,
+          headers,
+          body:
+            options.body instanceof FormData
+              ? options.body
+              : options.body
+                ? JSON.stringify(options.body)
+                : undefined,
+        },
+      );
       if (res.headers.has("set-cookie"))
         cookie = res.headers.get("set-cookie").split(";")[0];
       const type = res.headers.get("content-type") || "";
@@ -52,8 +55,8 @@ function client() {
   };
 }
 const admin = client(),
-  guest = client(),
-  customer = client(),
+  guest = client("customer"),
+  customer = client("customer"),
   book = client(),
   employee = client(),
   manager = client();
@@ -349,7 +352,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
         "new@example.test",
       );
       const password = decryptMail(mail.body).split("\n")[0].split(": ")[1];
-      const c = client();
+      const c = client("customer");
       const login = await c.call("/auth/login", {
         method: "POST",
         body: { email: "new@example.test", password },
@@ -378,7 +381,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
         200,
       );
       assert.equal((await c.call("/auth/me")).body.user.must_change, false);
-      const old = client();
+      const old = client("customer");
       assert.equal(
         (
           await old.call("/auth/login", {
@@ -475,7 +478,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
       assert.equal(ancestry(d.folder_id)[0].name, "Nested");
       assert.equal(
         (await customer.call("/documents/" + d.id + "/preview")).status,
-        403,
+        404,
       );
       assert.equal(
         (
@@ -532,7 +535,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
     async () => {
       const before = one("SELECT * FROM documents WHERE id=?", "d1");
       await admin.call("/documents/d1", { method: "DELETE" });
-      assert.equal((await customer.call("/documents/d1/preview")).status, 403);
+      assert.equal((await customer.call("/documents/d1/preview")).status, 404);
       await admin.call("/documents/d1/restore", { method: "POST" });
       const after = one("SELECT * FROM documents WHERE id=?", "d1");
       assert.equal(before.metadata, after.metadata);
@@ -624,7 +627,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
   await t.test(
     "Password recovery token expires after use and returns no enumeration signal",
     async () => {
-      const anon = client();
+      const anon = client("customer");
       const existing = await anon.call("/auth/forgot-password", {
         method: "POST",
         body: { email: "new@example.test" },
@@ -655,7 +658,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
   await t.test(
     "Idle timeout and session concurrency are enforced server-side",
     async () => {
-      const c = client();
+      const c = client("customer");
       await c.login("customer");
       run(
         "UPDATE sessions SET last_active='2020-01-01T00:00:00.000Z' WHERE user_id='customer'",
@@ -666,8 +669,8 @@ await test("Bacnhabook functional API and permission regression suite", async (t
       run(
         "INSERT INTO settings(key,value) VALUES ('max_sessions','1') ON CONFLICT(key) DO UPDATE SET value='1'",
       );
-      const a = client(),
-        b = client();
+      const a = client("customer"),
+        b = client("customer");
       assert.equal(
         (
           await a.call("/auth/login", {
@@ -765,8 +768,81 @@ await test("Bacnhabook functional API and permission regression suite", async (t
       }
     },
   );
+  await t.test(
+    "Customer portal lists only Bacnhabook repositories and denies internal endpoints",
+    async () => {
+      const repos = await guest.call("/repositories");
+      assert.deepEqual(
+        repos.body.map((r) => r.type),
+        ["BACNHABOOK"],
+      );
+      for (const endpoint of [
+        "/users",
+        "/dashboard",
+        "/audit",
+        "/settings",
+        "/trash",
+        "/approvals",
+        "/export",
+      ])
+        assert.equal((await customer.call(endpoint)).status, 403, endpoint);
+      for (const target of ["d10", "d11", "d12"])
+        assert.equal(
+          (await customer.call("/documents/" + target + "/preview")).status,
+          404,
+          target,
+        );
+    },
+  );
+  await t.test(
+    "Role cannot cross website boundaries through demo login",
+    async () => {
+      const outside = client("customer"),
+        inside = client();
+      assert.equal((await outside.login("admin")).status, 403);
+      assert.equal((await outside.login("employee")).status, 403);
+      assert.equal((await inside.login("customer")).status, 403);
+      assert.equal((await inside.call("/repositories")).status, 401);
+    },
+  );
+  await t.test(
+    "Independent cookie names prevent reusing an internal session on the customer website",
+    async () => {
+      const response = await fetch(base + "/dev/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: "admin" }),
+      });
+      const cookie = response.headers.get("set-cookie").split(";")[0];
+      assert.ok(cookie.startsWith("bacnha_internal_session="));
+      const forged = cookie.replace(
+        "bacnha_internal_session=",
+        "bacnha_customer_session=",
+      );
+      const result = await fetch(base + "/customer/auth/me", {
+        headers: { Cookie: forged },
+      });
+      assert.equal((await result.json()).user, null);
+    },
+  );
+  await t.test(
+    "Internal updates are immediately visible through the customer API",
+    async () => {
+      const text = "Đã cập nhật từ website quản trị riêng";
+      assert.equal(
+        (
+          await admin.call("/documents/d1", {
+            method: "PATCH",
+            body: { description: text },
+          })
+        ).status,
+        200,
+      );
+      assert.equal((await guest.call("/documents/d1")).body.description, text);
+    },
+  );
   await t.test("Logout revokes session immediately", async () => {
-    const c = client();
+    const c = client("customer");
     await c.login("customer");
     await c.call("/auth/logout", { method: "POST" });
     assert.equal((await c.call("/auth/me")).body.user, null);

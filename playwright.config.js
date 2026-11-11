@@ -15,11 +15,20 @@ export default defineConfig({
       args: ["--no-sandbox"],
     },
   },
-  webServer: {
-    command: `PORT=3001 DATA_DIR=.data/e2e-${process.pid} NODE_ENV=test node server/index.js`,
-    url: "http://127.0.0.1:3001/api/health",
-    reuseExistingServer: false,
-    timeout: 30000,
-  },
+  webServer: [
+    {
+      command: `PORT=3001 DATA_DIR=.data/e2e-${process.pid} NODE_ENV=test node server/index.js`,
+      url: "http://127.0.0.1:3001/api/health",
+      reuseExistingServer: false,
+      timeout: 30000,
+    },
+    {
+      command:
+        "SITE_MODE=customer PORT=3003 INTERNAL_API_URL=http://127.0.0.1:3001 NODE_ENV=test node server/launch.js",
+      url: "http://127.0.0.1:3003/api/health",
+      reuseExistingServer: false,
+      timeout: 30000,
+    },
+  ],
   reporter: [["list"], ["html", { open: "never" }]],
 });

@@ -12,7 +12,7 @@ npm ci --cache /workspace/.npm-cache
 npm run dev
 ```
 
-Máy chủ web + API chạy cổng `3000`, nghe trên `0.0.0.0`. Dev server tự tạo dữ liệu minh họa khi database trống. Bản dev đăng nhập trải nghiệm Super Admin ở lần mở đầu của phiên trình duyệt. Menu tài khoản cho phép đổi giữa 6 vai trò minh họa hoặc đăng xuất để kiểm tra Guest. Đây là đường đăng nhập **chỉ tồn tại ở development/test**, trả 404 trong production. Mật khẩu seed sinh ngẫu nhiên, không hardcode mật khẩu chung.
+Máy chủ web + API chạy cổng `3000`, nghe trên `0.0.0.0`. Dev server tự tạo dữ liệu minh họa khi database trống. Bản dev đăng nhập trải nghiệm Super Admin ở lần mở đầu của phiên trình duyệt. Menu website nội bộ cho phép thử các vai trò quản trị/nhân viên; website học liệu có Guest và tài khoản học viên mẫu riêng. Đây là đường đăng nhập **chỉ tồn tại ở development/test**, trả 404 trong production. Mật khẩu seed sinh ngẫu nhiên, không hardcode mật khẩu chung.
 
 Để trải nghiệm đúng bản đã build với dữ liệu/tài khoản minh họa:
 
@@ -94,3 +94,7 @@ Stack là lựa chọn cho bản phát triển, **không coi là quyết định
 ## Link trải nghiệm công khai
 
 Đã có `Dockerfile` và [hướng dẫn triển khai demo trên Render/Railway/VPS](docs/public-demo.md). Cần kết nối hosting để được cấp URL HTTPS; GitHub repository và server local không tự tạo link công khai. Demo phải dùng dữ liệu mẫu riêng, không kết nối dữ liệu production khi tính năng đổi vai trò công khai đang bật.
+
+## Cập nhật: hai website riêng
+
+Xem [kiến trúc, cách chạy và triển khai hai website](docs/two-websites.md). Website học liệu dùng `SITE_MODE=customer`; website admin + nội bộ dùng `SITE_MODE=internal`. Hai website có giao diện/cookie/role riêng, dùng chung dữ liệu qua API giới hạn; không phải hai bản copy database. Blueprint Render hiện khai báo **hai** service, cần Sync/Apply trong Render để tạo website học liệu mới. Font tiêu đề đã thay bằng Noto Serif có đầy đủ tiếng Việt.

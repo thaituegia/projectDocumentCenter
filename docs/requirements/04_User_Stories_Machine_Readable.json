@@ -1,0 +1,1020 @@
+{
+  "project": "Website Kho tài liệu & Học liệu Bacnhabook – Nội bộ",
+  "version": "1.0",
+  "date": "2026-11-11",
+  "release": "single_full_release",
+  "scope": "BR-01 to BR-38, BR-39 single phase; HRM future",
+  "open_decision": "BR-40 deadline TBD",
+  "total_stories": 63,
+  "total_acceptance_criteria": 189,
+  "stories": [
+    {
+      "id": "AUTH-01",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Admin Bacnhabook tạo khách hàng",
+      "persona": "Admin Bacnhabook",
+      "i_want": "tạo Customer từ email",
+      "so_that": "khách nhận tài khoản và chỉ được dùng học liệu đã cấp",
+      "br_refs": "BR-03,04,05",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given email hợp lệ chưa tồn tại, when Admin tạo khách, then hệ thống tạo user Customer, password ngẫu nhiên được hash, gửi email khởi tạo và đặt must_change_password=true.",
+        "Given email đã tồn tại, when tạo lại, then không tạo user trùng/không gửi lại mật khẩu; Admin có đường dẫn cấp quyền bổ sung.",
+        "Given Admin Bacnhabook tạo khách, then không có khả năng gán vai trò HCNS hoặc Super Admin."
+      ]
+    },
+    {
+      "id": "AUTH-02",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Đổi mật khẩu lần đăng nhập đầu",
+      "persona": "Customer",
+      "i_want": "đăng nhập bằng mật khẩu ban đầu và đổi mật khẩu",
+      "so_that": "đảm bảo tài khoản an toàn",
+      "br_refs": "BR-05,06",
+      "priority_within_release": "P0",
+      "dependencies": "AUTH-01",
+      "acceptance_criteria": [
+        "Given Customer có must_change_password=true, when login đúng, then điều hướng cưỡng chế sang màn đổi mật khẩu và chặn các API Private khác.",
+        "When đổi thành công then hash mới được lưu, mật khẩu cũ vô hiệu, must_change_password=false, tạo audit event.",
+        "Given mật khẩu mới không đạt chính sách, then hiển thị lỗi và không xóa cờ bắt buộc."
+      ]
+    },
+    {
+      "id": "AUTH-03",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Đăng nhập và khôi phục mật khẩu",
+      "persona": "Người dùng đã có tài khoản",
+      "i_want": "đăng nhập/đăng xuất và khôi phục qua email",
+      "so_that": "truy cập hệ thống an toàn",
+      "br_refs": "BR-05,06,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given email/mật khẩu đúng và account active, then tạo session an toàn và route theo vai trò.",
+        "Given mật khẩu sai nhiều lần, then áp dụng rate limit/defense và ghi sự kiện; thông báo không lộ email có tồn tại.",
+        "Given yêu cầu quên mật khẩu, then chỉ token khôi phục một lần dùng/hết hạn mới đổi được mật khẩu; token đã dùng bị vô hiệu."
+      ]
+    },
+    {
+      "id": "AUTH-04",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "HCNS quản lý tài khoản nhân viên",
+      "persona": "HCNS",
+      "i_want": "tạo, khóa, mở khóa và cập nhật phòng ban cho Employee",
+      "so_that": "quản lý vòng đời nhân sự",
+      "br_refs": "BR-13,14,32",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given HCNS tạo nhân viên, then email unique, gán đúng phòng ban và có trạng thái tài khoản rõ ràng.",
+        "Given Employee bị khóa, then session hiện có mất hiệu lực và các API Private trả từ chối.",
+        "Given HCNS đổi phòng ban, then hệ thống tính lại ACL theo membership mà không giữ Allow phòng ban cũ vô điều kiện."
+      ]
+    },
+    {
+      "id": "AUTH-05",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Super Admin gán vai trò và phạm vi",
+      "persona": "Super Admin",
+      "i_want": "gán vai trò quản lý kho, Admin Bacnhabook, HCNS",
+      "so_that": "phân cấp vận hành",
+      "br_refs": "BR-02,11,32",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Super Admin chỉ định Department Manager cho một Repository, then người đó chỉ quản lý scope được gán.",
+        "When thu hồi role/scope, then quyền quản trị tương ứng mất hiệu lực ngay trong API.",
+        "Given non-Super Admin gọi API gán Super Admin, then nhận 403 và ghi audit."
+      ]
+    },
+    {
+      "id": "AUTH-06",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Giới hạn thiết bị, phiên và idle timeout",
+      "persona": "Super Admin",
+      "i_want": "cấu hình tối đa thiết bị, phiên đồng thời và timeout",
+      "so_that": "giảm chia sẻ tài khoản",
+      "br_refs": "BR-29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given thiết lập tối đa phiên/thiết bị, when vượt hạn mức, then áp dụng chính sách từ chối/revoke được cấu hình và phản hồi dễ hiểu.",
+        "Given phiên idle quá ngưỡng, then không còn quyền gọi API; người dùng cần login lại.",
+        "Given user đăng xuất thiết bị, then token/refresh token của phiên đó bị vô hiệu."
+      ]
+    },
+    {
+      "id": "AUTH-07",
+      "epic": "E01 – Tài khoản & xác thực",
+      "title": "Xác thực hai lớp cho Admin",
+      "persona": "HCNS/Quản lý kho/Admin",
+      "i_want": "bật xác thực 2 lớp",
+      "so_that": "giảm nguy cơ lộ tài khoản quản trị",
+      "br_refs": "BR-29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Admin hợp lệ, when đăng nhập, then hệ thống yêu cầu bước MFA được cấu hình trước khi truy cập Admin.",
+        "Given MFA sai/hết hạn, then không tạo admin session và ghi sự kiện.",
+        "Given cần reset MFA, then chỉ Super Admin hoặc quy trình khôi phục đủ điều kiện được thực hiện và có audit."
+      ]
+    },
+    {
+      "id": "FOLD-01",
+      "epic": "E02 – Kho & Folder",
+      "title": "Duyệt cây kho, Folder và file",
+      "persona": "Guest/Employee/Customer",
+      "i_want": "xem cây thư mục đa cấp theo giao diện vai trò",
+      "so_that": "tìm nội dung nhanh",
+      "br_refs": "BR-07,09,11,21",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given người dùng mở Repository, then thấy breadcrumbs, Folder con, file trong Folder và bộ lọc.",
+        "Given file Private không có VIEW, then tên file vẫn hiển thị theo BR-09 nhưng không trả preview nội dung hoặc metadata nhạy cảm.",
+        "Given Folder đã xóa, then biến mất khỏi danh sách thường và chỉ xuất hiện trong Recycle Bin đúng scope."
+      ]
+    },
+    {
+      "id": "FOLD-02",
+      "epic": "E02 – Kho & Folder",
+      "title": "Tạo/sửa/xóa/di chuyển Folder",
+      "persona": "Quản lý kho",
+      "i_want": "quản lý cấu trúc Folder trong scope",
+      "so_that": "tổ chức kho dễ dàng",
+      "br_refs": "BR-11,32",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given manager có MANAGE trên Folder cha, then có thể tạo Folder con.",
+        "Given manager không quản lý repository, then gọi trực tiếp API sửa/move/xóa trả 403.",
+        "Given move Folder, then hệ thống từ chối move vào chính nó hoặc descendants và ghi audit."
+      ]
+    },
+    {
+      "id": "FOLD-03",
+      "epic": "E02 – Kho & Folder",
+      "title": "Thiết lập người quản lý kho",
+      "persona": "Super Admin",
+      "i_want": "ủy quyền phạm vi theo Repository/Folder",
+      "so_that": "mỗi phòng ban tự quản lý",
+      "br_refs": "BR-32,33",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Super Admin chỉ định manager của phòng ban, then manager được upload, quản lý file và grant tài liệu scope đó.",
+        "Given manager A truy cập Repository B không được giao, then không đọc/ghi/approve bằng API.",
+        "When thu hồi scope, then editor và grant editor bị vô hiệu ngay."
+      ]
+    },
+    {
+      "id": "FOLD-04",
+      "epic": "E02 – Kho & Folder",
+      "title": "Upload nguyên Folder giữ cấu trúc",
+      "persona": "Admin/Quản lý kho",
+      "i_want": "chọn Folder trên PC/mobile và upload",
+      "so_that": "đưa bộ học liệu lên nhanh",
+      "br_refs": "BR-23,27",
+      "priority_within_release": "P0",
+      "dependencies": "FOLD-02,FILE-01",
+      "acceptance_criteria": [
+        "Given cây Folder nhiều cấp, when upload, then tạo đúng hierarchy và giữ relative path từng file.",
+        "Given một file thất bại, then job thể hiện success/fail per-file và hỗ trợ retry file lỗi không duplicate file đã thành công.",
+        "Given tệp có định dạng bất kỳ, then nhận upload qua pipeline an toàn, không tự giải nén ZIP thành Folder."
+      ]
+    },
+    {
+      "id": "FOLD-05",
+      "epic": "E02 – Kho & Folder",
+      "title": "Kế thừa cấu hình Folder",
+      "persona": "Quản lý kho",
+      "i_want": "thiết lập chính sách mặc định tại Folder cha",
+      "so_that": "giảm cấu hình lặp",
+      "br_refs": "BR-07,08,34,35",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Folder con không override, then nhận giá trị config được kế thừa từ parent.",
+        "Given Folder con override người duyệt hoặc metadata policy, then chỉ áp dụng override tại subtree tương ứng.",
+        "When parent đổi cấu hình, then cây con không override được tính lại đúng và có audit."
+      ]
+    },
+    {
+      "id": "FILE-01",
+      "epic": "E03 – File & Viewer",
+      "title": "Upload file lên R2 Private",
+      "persona": "Admin/Quản lý kho",
+      "i_want": "upload file mọi định dạng",
+      "so_that": "lưu dữ liệu tập trung",
+      "br_refs": "BR-10,27",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given tài khoản có MANAGE, when bắt đầu upload, then backend tạo upload job và signed upload chỉ đúng object key, TTL ngắn.",
+        "Given upload hoàn tất, then backend xác minh object tồn tại/size/checksum được cấu hình trước khi publish metadata.",
+        "Given object chưa scan hoặc thất bại kiểm tra, then file không có URL xem/tải cho end-user."
+      ]
+    },
+    {
+      "id": "FILE-02",
+      "epic": "E03 – File & Viewer",
+      "title": "Đặt metadata cơ bản và download policy",
+      "persona": "Quản lý kho",
+      "i_want": "chỉnh tên, mô tả, Public/Private, is_downloadable",
+      "so_that": "quản lý file linh hoạt",
+      "br_refs": "BR-08,09,10",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given có quyền quản lý, when sửa metadata, then thông tin lưu và có audit.",
+        "Given is_downloadable=false, then user VIEW không lấy được original qua download API.",
+        "Given chuyển Public→Private, then URL truy cập cũ không còn cấp nội dung ngoài hạn TTL đã phát hành; mọi request mới cần ACL."
+      ]
+    },
+    {
+      "id": "FILE-03",
+      "epic": "E03 – File & Viewer",
+      "title": "Preview popup tài liệu",
+      "persona": "Người dùng có VIEW",
+      "i_want": "xem nhanh tài liệu không rời danh sách",
+      "so_that": "tiết kiệm thao tác",
+      "br_refs": "BR-22",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given file có preview ready, when bấm xem nhanh, then modal hiển thị nội dung và controls đúng định dạng.",
+        "Given thiếu VIEW, then modal thông báo không có quyền, không fetch preview bytes.",
+        "Given preview chưa xử lý hoặc định dạng không hỗ trợ, then hiển thị trạng thái/fallback mà không lỗi giao diện."
+      ]
+    },
+    {
+      "id": "FILE-04",
+      "epic": "E03 – File & Viewer",
+      "title": "Trang Viewer riêng, responsive",
+      "persona": "Người dùng có VIEW",
+      "i_want": "mở trang đọc/xem toàn màn hình",
+      "so_that": "học và tra cứu hiệu quả",
+      "br_refs": "BR-22,30",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given PDF/PPT/ảnh, then viewer zoom/đổi trang/toàn màn hình theo khả năng định dạng.",
+        "Given audio/video, then có play/pause/seek/tốc độ/toàn màn hình khi phù hợp.",
+        "Given viewport mobile, then controls không bị tràn và touch input hoạt động."
+      ]
+    },
+    {
+      "id": "FILE-05",
+      "epic": "E03 – File & Viewer",
+      "title": "Tải original đúng quyền",
+      "persona": "Người dùng có VIEW và DOWNLOAD",
+      "i_want": "tải tài liệu được cho phép",
+      "so_that": "sử dụng ngoại tuyến khi được phép",
+      "br_refs": "BR-08,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given downloadable=true và effective ACL DOWNLOAD Allow, then endpoint cấp file original/URL TTL ngắn.",
+        "Given downloadable=false hoặc Deny DOWNLOAD, then endpoint 403 kể cả gọi thủ công.",
+        "Given Admin quản lý file, then có action lấy original để sửa offline theo quyền MANAGE riêng."
+      ]
+    },
+    {
+      "id": "FILE-06",
+      "epic": "E03 – File & Viewer",
+      "title": "Watermark động trên bản xem",
+      "persona": "Khách hàng/Nhân viên",
+      "i_want": "xem tài liệu với watermark định danh",
+      "so_that": "răn đe rò rỉ học liệu",
+      "br_refs": "BR-29",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given viewer mở file có watermark policy, then email định danh/giá trị cho phép hiển thị trên lớp xem.",
+        "Given user chưa có VIEW, then không cấp nội dung dù có watermark.",
+        "Given chuyển trang/seek/fullscreen, then watermark vẫn xuất hiện theo cấu hình; không tuyên bố chống chụp màn hình tuyệt đối."
+      ]
+    },
+    {
+      "id": "FILE-07",
+      "epic": "E03 – File & Viewer",
+      "title": "Ghi đè tài liệu",
+      "persona": "Quản lý kho",
+      "i_want": "upload bản mới thay bản hiện tại",
+      "so_that": "cập nhật nhanh",
+      "br_refs": "BR-12,28",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given lựa chọn overwrite, then current file object ref cập nhật sau khi scan thành công, không thêm version UI mới.",
+        "Given update không thành công, then current file cũ vẫn hoạt động.",
+        "When overwrite thành công, then preview/index được regenerate và audit chứa actor/time."
+      ]
+    },
+    {
+      "id": "FILE-08",
+      "epic": "E03 – File & Viewer",
+      "title": "Tạo và khôi phục phiên bản",
+      "persona": "Quản lý kho",
+      "i_want": "lưu V1/V2 và phục hồi",
+      "so_that": "theo dõi thay đổi quan trọng",
+      "br_refs": "BR-12",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given chọn new version, then phiên bản cũ được giữ, version_number tăng tuần tự.",
+        "Given chọn restore version cũ, then current content đúng version được chọn, quyền và metadata được bảo toàn theo policy.",
+        "Given user thiếu quyền MANAGE, then không xem object original của version hoặc restore."
+      ]
+    },
+    {
+      "id": "FILE-09",
+      "epic": "E03 – File & Viewer",
+      "title": "Pipeline scan/convert/index",
+      "persona": "Hệ thống",
+      "i_want": "scan file và chuyển định dạng xem trước, lấy fulltext",
+      "so_that": "phục vụ preview và search an toàn",
+      "br_refs": "BR-17,22,27",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given upload mới, then tạo processing job có trạng thái queued/processing/ready/failed và retry.",
+        "Given PDF/Office chứa văn bản đọc được, then text được trích xuất và lập chỉ mục đúng document ID.",
+        "Given file nguy hiểm/không hợp lệ, then đánh dấu quarantined và không phân phối qua preview/download."
+      ]
+    },
+    {
+      "id": "ACL-01",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Cấp quyền trực tiếp theo user/file",
+      "persona": "Admin/Quản lý kho",
+      "i_want": "chọn email và action VIEW/DOWNLOAD",
+      "so_that": "cấp đúng nội dung",
+      "br_refs": "BR-03,07,08,33",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Admin có quyền GRANT trong scope, then có thể tạo Allow trên file cho employee/customer phù hợp.",
+        "Given Admin chọn file thuộc kho khác, then API trả 403.",
+        "Given grant mới, then audit lưu subject, target, action, effect và người cấp."
+      ]
+    },
+    {
+      "id": "ACL-02",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Cấp quyền theo Folder và kế thừa",
+      "persona": "Admin/Quản lý kho",
+      "i_want": "cấp truy cập toàn bộ Folder",
+      "so_that": "không phải cấp từng file",
+      "br_refs": "BR-07,11",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Allow VIEW trên Folder, then user được VIEW các file hiện có và file mới ở mọi cấp con.",
+        "Given thu hồi quyền Folder, then các quyền kế thừa mất hiệu lực; grant trực tiếp ở file khác vẫn được kiểm tra độc lập.",
+        "Given folder bị move, then test recompute ancestor ACL và không leak grant cũ."
+      ]
+    },
+    {
+      "id": "ACL-03",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Cấp quyền theo phòng ban và cá nhân",
+      "persona": "HCNS/Quản lý kho",
+      "i_want": "gán phòng ban và email cá nhân",
+      "so_that": "phục vụ nhiều nhóm khác nhau",
+      "br_refs": "BR-14,33",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Allow cho phòng ban, then nhân viên active trong phòng ban được hưởng quyền.",
+        "Given Allow cá nhân ở ngoài phòng ban, then user đó được truy cập nếu không có Deny.",
+        "Given đổi phòng ban, then kết quả quyền đổi theo membership hiện hành."
+      ]
+    },
+    {
+      "id": "ACL-04",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Deny luôn thắng Allow",
+      "persona": "Hệ thống",
+      "i_want": "tính đúng ưu tiên hiệu lực",
+      "so_that": "không bị vượt chính sách chặn",
+      "br_refs": "BR-15",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Allow trên Folder và Deny cá nhân trên file, then VIEW file bị từ chối.",
+        "Given Deny trên Folder cha và Allow trên file con, then vẫn từ chối.",
+        "Given tất cả grant Deny hết hạn hoặc bị thu hồi, then tính lại grant đang hiệu lực; không cache quyền quá hạn."
+      ]
+    },
+    {
+      "id": "ACL-05",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Grant có thời hạn",
+      "persona": "Admin/Quản lý kho",
+      "i_want": "đặt valid_from/valid_until hoặc vĩnh viễn",
+      "so_that": "quản trị quyền tạm thời",
+      "br_refs": "BR-16",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given grant bắt đầu tương lai, then trước valid_from API trả không đủ quyền.",
+        "Given current time qua valid_until, then quyền Allow tự hết hiệu lực không cần xóa file.",
+        "Given gia hạn, then lưu lịch sử và quyền có hiệu lực theo thời điểm mới."
+      ]
+    },
+    {
+      "id": "ACL-06",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Hiển thị tài liệu chưa có quyền",
+      "persona": "Guest/Employee/Customer",
+      "i_want": "thấy tên file nhưng không mở được",
+      "so_that": "biết nội dung kho tồn tại",
+      "br_refs": "BR-09",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Private chưa có quyền, then có tên file trong listing, hiển thị dấu khóa.",
+        "When click, then trả thông báo không có quyền với lựa chọn gửi yêu cầu, API preview trả 403.",
+        "Then search không lộ text snippet hay dữ liệu nội dung chưa được cấp quyền."
+      ]
+    },
+    {
+      "id": "ACL-07",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Chia sẻ URL và yêu cầu quyền",
+      "persona": "Người dùng",
+      "i_want": "sao chép link và yêu cầu truy cập",
+      "so_that": "chuyển tài liệu cho đồng nghiệp đúng quy trình",
+      "br_refs": "BR-25",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given user copy link, then URL chỉ tham chiếu tài liệu, không đính kèm grant bí mật.",
+        "Given người nhận thiếu VIEW, then tạo access request có requester/target/reason.",
+        "Given Admin phê duyệt, then cấp grant có thời hạn theo chính sách và gửi notification; Deny vẫn được tôn trọng."
+      ]
+    },
+    {
+      "id": "ACL-08",
+      "epic": "E04 – ACL & chia sẻ",
+      "title": "Xử lý quyền cho nhân viên khác phòng",
+      "persona": "Quản lý kho",
+      "i_want": "cấp quyền từ kho mình cho bất kỳ employee",
+      "so_that": "tăng phối hợp liên phòng ban",
+      "br_refs": "BR-32,33",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Department Manager quản lý repo Marketing, then cấp VIEW cho Employee phòng Sales được.",
+        "Given user đó chọn file repo Finance ngoài scope, then không thể cấp quyền.",
+        "When grant được thu hồi, then người nhận mất quyền khi không còn grant Allow khác."
+      ]
+    },
+    {
+      "id": "BULK-01",
+      "epic": "E05 – Import Bacnhabook",
+      "title": "Nhập danh sách khách bằng Excel",
+      "persona": "Admin Bacnhabook",
+      "i_want": "import Excel mẫu",
+      "so_that": "tạo hàng trăm account nhanh",
+      "br_refs": "BR-24",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given file .xlsx hợp lệ, then hệ thống validate email từng dòng, hiển thị preview kết quả trước khi commit.",
+        "Given email trùng hoặc sai định dạng, then report trạng thái per-row và không tạo duplicate.",
+        "Given commit, then upload job trạng thái có số success/fail và cho tải báo cáo lỗi."
+      ]
+    },
+    {
+      "id": "BULK-02",
+      "epic": "E05 – Import Bacnhabook",
+      "title": "Gán quyền hàng loạt",
+      "persona": "Admin Bacnhabook",
+      "i_want": "cấp một hay nhiều Folder/file cho nhiều email",
+      "so_that": "giảm thao tác thủ công",
+      "br_refs": "BR-24,07,16",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given danh sách email và grant config hợp lệ, then hệ thống tạo quyền per-user idempotent.",
+        "Given một user đã có grant tương đương, then không phát sinh grant trùng.",
+        "Given grant có hạn, then tất cả user nhận valid_until đúng theo batch."
+      ]
+    },
+    {
+      "id": "BULK-03",
+      "epic": "E05 – Import Bacnhabook",
+      "title": "Gửi email khởi tạo hàng loạt",
+      "persona": "Admin Bacnhabook",
+      "i_want": "gửi thông tin truy cập cho tài khoản mới",
+      "so_that": "khách bắt đầu học",
+      "br_refs": "BR-05,24,26",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given batch tạo user mới, then email chứa mật khẩu random được xếp hàng gửi một lần cho mỗi tài khoản mới.",
+        "Given gửi lỗi, then hiển thị email delivery status và retry có kiểm soát, không log mật khẩu thô.",
+        "Given tài khoản tồn tại, then không gửi lại mật khẩu khởi tạo."
+      ]
+    },
+    {
+      "id": "PUB-01",
+      "epic": "E06 – Xuất bản & phê duyệt",
+      "title": "Lưu nháp và xuất bản ngay",
+      "persona": "Quản lý kho",
+      "i_want": "chọn Draft hoặc Published",
+      "so_that": "tự quyết định công bố",
+      "br_refs": "BR-20",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given user có MANAGE, then có thể lưu Draft; người không quản trị không thấy nội dung Draft.",
+        "Given có quyền PUBLISH, then chọn Publish làm Published và áp dụng ACL Public/Private.",
+        "Given thiếu PUBLISH, then nút Publish bị ẩn và gọi API trực tiếp trả 403."
+      ]
+    },
+    {
+      "id": "PUB-02",
+      "epic": "E06 – Xuất bản & phê duyệt",
+      "title": "Cấu hình người duyệt theo Folder",
+      "persona": "Super Admin/người được ủy quyền",
+      "i_want": "chọn approver cho từng Folder",
+      "so_that": "đưa tài liệu đúng người duyệt",
+      "br_refs": "BR-34",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Folder con không cấu hình approver, then kế thừa từ cha.",
+        "Given Folder con có override, then request gửi người duyệt tại Folder con.",
+        "Given người không có thẩm quyền sửa approval config, then 403 và ghi audit."
+      ]
+    },
+    {
+      "id": "PUB-03",
+      "epic": "E06 – Xuất bản & phê duyệt",
+      "title": "Gửi duyệt, duyệt và từ chối",
+      "persona": "Người upload/Người duyệt",
+      "i_want": "gửi và xử lý phê duyệt",
+      "so_that": "xuất bản có kiểm soát",
+      "br_refs": "BR-20,34",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given tài liệu Draft, when Submit, then trạng thái PENDING_APPROVAL, tạo inbox notification cho approver theo Folder.",
+        "Given người duyệt hợp lệ Approve, then Published; Reject, then trạng thái REJECTED kèm lý do.",
+        "Given người ngoài danh sách duyệt gọi approve API, then 403; nhật ký có actor/time/decision."
+      ]
+    },
+    {
+      "id": "PUB-04",
+      "epic": "E06 – Xuất bản & phê duyệt",
+      "title": "Thông báo quá trình phê duyệt",
+      "persona": "Admin/Người upload",
+      "i_want": "được nhắc khi có tài liệu chờ duyệt/kết quả",
+      "so_that": "không bỏ sót yêu cầu",
+      "br_refs": "BR-20,26,34",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given submit, then email/in-app gửi đúng approver, không lộ tài liệu nhạy cảm cho người ngoài.",
+        "Given approval/reject, then uploader nhận notification và xem được trạng thái/lý do.",
+        "Given email thất bại, then in-app vẫn thể hiện và outbox có trạng thái retry."
+      ]
+    },
+    {
+      "id": "META-01",
+      "epic": "E07 – Tìm kiếm & metadata",
+      "title": "Tạo custom metadata schema",
+      "persona": "Quản lý kho",
+      "i_want": "khai báo trường theo Repo/Folder",
+      "so_that": "phân loại tài liệu đặc thù",
+      "br_refs": "BR-35",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given có quyền cấu hình, then tạo trường text/number/date/select/boolean có key duy nhất trong scope.",
+        "Given required=true, then save metadata thiếu trường trả lỗi có thể hiểu.",
+        "Given Folder con chưa override, then nhận schema định nghĩa ở Folder cha."
+      ]
+    },
+    {
+      "id": "META-02",
+      "epic": "E07 – Tìm kiếm & metadata",
+      "title": "Gắn và sửa metadata theo file",
+      "persona": "Quản lý kho",
+      "i_want": "nhập các field động",
+      "so_that": "tìm kiếm dễ hơn",
+      "br_refs": "BR-35",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given file thuộc Folder có schema, then form hiển thị đúng kiểu dữ liệu và validation.",
+        "Given save hợp lệ, then metadata có giá trị mới và audit.",
+        "Given user VIEW nhưng không MANAGE, then không sửa Metadata qua UI/API."
+      ]
+    },
+    {
+      "id": "SEARCH-01",
+      "epic": "E07 – Tìm kiếm & metadata",
+      "title": "Tìm theo tên, Folder, metadata và bộ lọc",
+      "persona": "Guest/Employee/Customer",
+      "i_want": "tìm kiếm file nhanh",
+      "so_that": "giảm thời gian tra cứu",
+      "br_refs": "BR-17",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given keyword, then trả document match tên/file/path và filter type/repository/date/department/metadata khi có.",
+        "Given user thiếu VIEW, then tên theo listing policy có thể hiện nhưng kết quả không có protected fields.",
+        "Given phân trang và sắp xếp, then kết quả ổn định không duplicate khi chuyển trang."
+      ]
+    },
+    {
+      "id": "SEARCH-02",
+      "epic": "E07 – Tìm kiếm & metadata",
+      "title": "Fulltext bên trong PDF/Office",
+      "persona": "Người dùng",
+      "i_want": "tìm từ khóa xuất hiện trong file có text",
+      "so_that": "tra cứu chính xác",
+      "br_refs": "BR-17",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given PDF/DOCX/XLSX/PPTX có text parse được, then index text sau file xử lý xong.",
+        "Given user có VIEW, then có thể tìm theo từ khóa trong text, preview snippet chỉ trong phạm vi quyền.",
+        "Given user không có VIEW, then không nhận đoạn trích của file đó; không yêu cầu ASR/OCR trong scope."
+      ]
+    },
+    {
+      "id": "SEARCH-03",
+      "epic": "E07 – Tìm kiếm & metadata",
+      "title": "Tái lập chỉ mục khi file thay đổi",
+      "persona": "Hệ thống",
+      "i_want": "refresh index khi update/delete/permission",
+      "so_that": "không trả kết quả lỗi thời",
+      "br_refs": "BR-12,17,18",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given overwrite/new version, then text index thay thế current content sau conversion.",
+        "Given soft delete/expire policy, then search visibility phản ánh trạng thái tương ứng.",
+        "Given queue fail, then có retry và dashboard xử lý lỗi."
+      ]
+    },
+    {
+      "id": "LIFE-01",
+      "epic": "E08 – Vòng đời & xóa",
+      "title": "Cấu hình hiệu lực tài liệu",
+      "persona": "Quản lý kho",
+      "i_want": "đặt start/end effective dates",
+      "so_that": "quản lý hiệu lực",
+      "br_refs": "BR-36",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given ngày future, then hiện trạng thái Scheduled trước ngày hiệu lực.",
+        "Given qua ngày hết hiệu lực, then hệ thống tự gắn Expired và cảnh báo khi người có quyền xem.",
+        "Given range ngày không hợp lệ, then API validation trả 400."
+      ]
+    },
+    {
+      "id": "LIFE-02",
+      "epic": "E08 – Vòng đời & xóa",
+      "title": "Liên kết tài liệu thay thế",
+      "persona": "Quản lý kho",
+      "i_want": "chỉ định file mới thay thế file cũ",
+      "so_that": "dẫn đến phiên bản chính xác",
+      "br_refs": "BR-36",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given tài liệu Expired, then viewer hiển thị banner và link replacement khi có.",
+        "Given replacement thuộc scope user không có VIEW, then click link tiếp tục qua ACL, không bypass.",
+        "Given replacement bị xóa, then không sinh dead link và dashboard cảnh báo broken reference."
+      ]
+    },
+    {
+      "id": "TRASH-01",
+      "epic": "E08 – Vòng đời & xóa",
+      "title": "Soft delete Folder và file",
+      "persona": "Quản lý kho",
+      "i_want": "xóa nhầm vẫn cứu được",
+      "so_that": "tránh mất dữ liệu",
+      "br_refs": "BR-18",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given xóa một Folder, then Folder và descendants chuyển trạng thái deleted, không xuất hiện trong danh mục thường.",
+        "Given user không MANAGE, then delete API trả 403.",
+        "Given delete thành công, then log người xóa/time, file R2 chưa xóa vật lý ngay."
+      ]
+    },
+    {
+      "id": "TRASH-02",
+      "epic": "E08 – Vòng đời & xóa",
+      "title": "Khôi phục từ thùng rác",
+      "persona": "Quản lý kho",
+      "i_want": "restore một file hoặc Folder",
+      "so_that": "khôi phục thao tác sai",
+      "br_refs": "BR-18",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given tài liệu còn trong retention, then Admin thuộc scope restore được.",
+        "Given path gốc không còn hoặc có xung đột tên, then yêu cầu giải quyết conflict, không overwrite âm thầm.",
+        "Given restore thành công, then metadata/ACL/version/history được giữ và preview/search tái lập nếu cần."
+      ]
+    },
+    {
+      "id": "TRASH-03",
+      "epic": "E08 – Vòng đời & xóa",
+      "title": "Retention cấu hình và dọn thùng rác",
+      "persona": "Super Admin",
+      "i_want": "đặt thời gian lưu deleted objects",
+      "so_that": "quản lý vòng đời lưu trữ",
+      "br_refs": "BR-18",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given retention đã cấu hình, then scheduler chỉ purge dữ liệu quá hạn và không thuộc legal hold.",
+        "Given purge, then audit có lượng object/counter và kết quả.",
+        "Given object backup độc lập còn trong retention backup, then không phá bản backup bởi purge trên primary."
+      ]
+    },
+    {
+      "id": "NOTI-01",
+      "epic": "E09 – Thông báo & yêu cầu",
+      "title": "Trung tâm thông báo trên website",
+      "persona": "Tất cả user",
+      "i_want": "xem thông báo, đánh dấu đã đọc",
+      "so_that": "theo dõi yêu cầu và tài liệu",
+      "br_refs": "BR-26",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given sự kiện được gửi cho user, then notification xuất hiện theo tài khoản, hiển thị unread count.",
+        "When click, then điều hướng đến tài nguyên, API tài nguyên kiểm tra ACL lại.",
+        "Given tài khoản khác, then không được xem notification của user hiện tại."
+      ]
+    },
+    {
+      "id": "NOTI-02",
+      "epic": "E09 – Thông báo & yêu cầu",
+      "title": "Email sự kiện quan trọng",
+      "persona": "Hệ thống",
+      "i_want": "gửi email tạo account, grant/revoke, approval, expiry",
+      "so_that": "nhắc người dùng đúng lúc",
+      "br_refs": "BR-26",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given event cần email, then email được đưa vào outbox và gửi async, có retry và trạng thái.",
+        "Given event chứa dữ liệu HCNS, then template không gửi nội dung nhạy cảm cho người không đủ quyền.",
+        "Given resend, then không tạo notification/email duplicate khi cùng idempotency key."
+      ]
+    },
+    {
+      "id": "NOTI-03",
+      "epic": "E09 – Thông báo & yêu cầu",
+      "title": "Inbox yêu cầu cấp quyền",
+      "persona": "Quản lý kho",
+      "i_want": "duyệt/từ chối các yêu cầu xem tài liệu",
+      "so_that": "vận hành nhanh",
+      "br_refs": "BR-25,26,33",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given access request tới tài liệu thuộc scope, then chỉ Admin có quyền GRANT tương ứng được thấy trong inbox.",
+        "Given Approve, then tạo grant hợp lệ và notification kết quả cho requester.",
+        "Given Reject, then lưu lý do và thông báo; không tạo grant."
+      ]
+    },
+    {
+      "id": "AUD-01",
+      "epic": "E10 – Dashboard & Audit",
+      "title": "Audit Log mọi hành động quan trọng",
+      "persona": "Super Admin",
+      "i_want": "tra cứu lịch sử thao tác",
+      "so_that": "phục vụ kiểm soát và điều tra",
+      "br_refs": "BR-19,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given upload/delete/permission/login/download/deny/backup, then tạo event có actor, time, target, outcome.",
+        "Given user không có quyền log scope, then API log trả 403/đã lọc không lộ dữ liệu kho khác.",
+        "Given event đã ghi, then Admin thông thường không có chức năng sửa/xóa nội dung Audit."
+      ]
+    },
+    {
+      "id": "DASH-01",
+      "epic": "E10 – Dashboard & Audit",
+      "title": "Dashboard số liệu sử dụng",
+      "persona": "Super Admin/Quản lý kho",
+      "i_want": "xem số lượng file, view/download, người dùng hoạt động",
+      "so_that": "đánh giá sử dụng kho",
+      "br_refs": "BR-19",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given user là Admin Bacnhabook, then chỉ xem số liệu kho Bacnhabook.",
+        "Given date range, then chart/filter phản ánh đúng logs trong khoảng thời gian và định nghĩa chỉ số.",
+        "Given dữ liệu không có, then hiển thị 0/empty state không gây lỗi."
+      ]
+    },
+    {
+      "id": "DASH-02",
+      "epic": "E10 – Dashboard & Audit",
+      "title": "R2 usage snapshots và cảnh báo ngưỡng",
+      "persona": "Super Admin",
+      "i_want": "theo dõi dung lượng và cảnh báo",
+      "so_that": "kiểm soát vận hành",
+      "br_refs": "BR-31",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given job đo dung lượng, then dashboard có tổng bytes và breakdown theo repository/định dạng theo dữ liệu hệ thống.",
+        "Given vượt threshold, then gửi cảnh báo email/in-app và không chặn upload.",
+        "Given cost chỉ là ước tính, then UI ghi rõ Estimated, không trình bày như số billed actual."
+      ]
+    },
+    {
+      "id": "DASH-03",
+      "epic": "E10 – Dashboard & Audit",
+      "title": "Báo cáo xuất dữ liệu quản trị",
+      "persona": "Super Admin/Quản lý kho",
+      "i_want": "xuất dữ liệu thống kê/Audit phù hợp scope",
+      "so_that": "phục vụ đối soát",
+      "br_refs": "BR-19,31",
+      "priority_within_release": "P2",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given người đủ quyền, then có thể export chỉ số đã lọc theo date range.",
+        "Given export trong scope, then dữ liệu không chứa audit/record ngoài scope.",
+        "Given job lớn, then export async và có trạng thái hoàn tất."
+      ]
+    },
+    {
+      "id": "SEC-01",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Kho file R2 Private và signed access",
+      "persona": "Hệ thống",
+      "i_want": "đảm bảo URL không lộ tài liệu Private",
+      "so_that": "bảo vệ file gốc",
+      "br_refs": "BR-27,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given user thiếu VIEW, then backend không tạo link preview/stream cho đối tượng đó.",
+        "Given URL xem/tải đã hết hạn, then không truy cập được, không có bucket public.",
+        "Given revoked permission, then request cấp token/link mới bị từ chối; TTL cũ được giảm thiểu trong cấu hình."
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Bảo vệ viewer trước download trái phép",
+      "persona": "Hệ thống",
+      "i_want": "tách original và preview",
+      "so_that": "tôn trọng chính sách không tải",
+      "br_refs": "BR-08,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given file không downloadable, then API download original trả 403 bất kể URL FE.",
+        "Given tài liệu dạng Office/PDF, then viewer dùng bản render bảo vệ quyền thay vì cung cấp original khi không download.",
+        "Given media streaming, then mỗi yêu cầu playlist/segment được bảo vệ tương ứng; không hứa ngăn recording hoàn toàn."
+      ]
+    },
+    {
+      "id": "SEC-03",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Tự động kiểm tra file nguy hiểm",
+      "persona": "Hệ thống",
+      "i_want": "quét và cách ly nội dung độc hại",
+      "so_that": "tránh phát tán mã độc",
+      "br_refs": "BR-27,29",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given file định dạng bất kỳ vừa upload, then trạng thái pending_scan trước khi publish.",
+        "Given scan unsafe, then quarantine và chặn preview/download; log và thông báo quản trị.",
+        "Given scanner lỗi, then fail closed và retry, không tự publish file chưa xét."
+      ]
+    },
+    {
+      "id": "OPS-01",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Backup độc lập DB và R2",
+      "persona": "DevOps/Super Admin",
+      "i_want": "sao lưu đủ dữ liệu",
+      "so_that": "phục hồi khi sự cố",
+      "br_refs": "BR-37",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given lịch backup đã cấu hình, then lưu DB snapshot và R2 object manifest/copy sang vùng độc lập.",
+        "Given job backup lỗi, then dashboard cảnh báo và có audit/run status.",
+        "Given primary bị xóa/thiếu object, then backup độc lập vẫn có thể truy xuất để phục hồi."
+      ]
+    },
+    {
+      "id": "OPS-02",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Khôi phục file, Folder hoặc hệ thống",
+      "persona": "DevOps/Super Admin",
+      "i_want": "restore file/Folder/DB nhất quán",
+      "so_that": "giảm mất mát dữ liệu",
+      "br_refs": "BR-37",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given backup hợp lệ, then có runbook restore 1 file, 1 Folder, full DB+object.",
+        "Given restore test staging, then validate checksum/object count/ACL metadata matches.",
+        "Given restore production, then yêu cầu quyền cao và audit execution đầy đủ."
+      ]
+    },
+    {
+      "id": "OPS-03",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Responsive đầy đủ PC/Mobile",
+      "persona": "Người dùng tất cả vai trò",
+      "i_want": "thực hiện thao tác trên cả thiết bị",
+      "so_that": "không phụ thuộc máy tính",
+      "br_refs": "BR-30",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given viewport desktop/tablet/mobile, then navigation, table, viewer, permission modal hoạt động.",
+        "Given mobile, then upload file từ thiết bị và phản hồi tiến độ được.",
+        "Given touch navigation, then không có button điều khiển quan trọng bị che/tràn."
+      ]
+    },
+    {
+      "id": "OPS-04",
+      "epic": "E11 – Bảo mật & vận hành",
+      "title": "Kiểm thử tải và giám sát 500 đồng thời",
+      "persona": "DevOps/QA",
+      "i_want": "xác nhận năng lực tải và cảnh báo",
+      "so_that": "đảm bảo vận hành",
+      "br_refs": "BR-38",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given kịch bản 100–500 concurrent users, then chạy load test với hỗn hợp browse/search/stream/upload phân bổ đại diện.",
+        "Given lỗi R2/DB/conversion, then có metrics và alert phù hợp.",
+        "Given load test, then báo cáo throughput, p95, lỗi, tài nguyên và bottleneck rõ ràng."
+      ]
+    },
+    {
+      "id": "UX-01",
+      "epic": "E12 – UX & tích hợp tương lai",
+      "title": "Giao diện theo từng vai trò",
+      "persona": "Guest/Customer/Employee/Admin",
+      "i_want": "thấy điều hướng đúng nghiệp vụ",
+      "so_that": "dễ sử dụng",
+      "br_refs": "BR-02,21,30",
+      "priority_within_release": "P0",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given Customer Bacnhabook, then landing ưu tiên học liệu, không hiện menu HCNS.",
+        "Given HCNS, then giao diện có quản lý nhân viên, Folder HCNS và yêu cầu được giao.",
+        "Given role chồng lấn, then chỉ hiện chức năng có quyền backend; không thể nâng quyền bằng sửa route."
+      ]
+    },
+    {
+      "id": "UX-02",
+      "epic": "E12 – UX & tích hợp tương lai",
+      "title": "Mô tả trạng thái Empty/Loading/Error",
+      "persona": "Người dùng",
+      "i_want": "hiểu hệ thống đang xử lý",
+      "so_that": "giảm nhầm lẫn",
+      "br_refs": "BR-22,23,30",
+      "priority_within_release": "P1",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given preview đang convert, then hiển thị processing và retry nếu lỗi.",
+        "Given upload folder chưa xong, then hiển thị tiến trình từng file.",
+        "Given 401/403/404, then hiển thị thông điệp phù hợp, không để trang trắng."
+      ]
+    },
+    {
+      "id": "INT-01",
+      "epic": "E12 – UX & tích hợp tương lai",
+      "title": "Chuẩn bị khả năng đồng bộ HRM",
+      "persona": "HCNS/Dev",
+      "i_want": "lưu khóa liên kết để tích hợp HRM về sau",
+      "so_that": "giảm chi phí nâng cấp",
+      "br_refs": "BR-13",
+      "priority_within_release": "P2",
+      "dependencies": "—",
+      "acceptance_criteria": [
+        "Given employee hiện hữu, then schema hỗ trợ external HRM identifier nullable, không ảnh hưởng đăng nhập hiện tại.",
+        "Given release đầu chưa tích hợp HRM, then không chạy sync tự động và không có phụ thuộc bắt buộc vào API HRM.",
+        "Given account được liên kết HRM tương lai, then có design note về source-of-truth và cách conflict."
+      ]
+    }
+  ]
+}

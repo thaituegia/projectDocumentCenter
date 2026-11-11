@@ -1,0 +1,2831 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Bacnhabook Development API",
+    "version": "0.1.0",
+    "description": "Executable API development subset; not production contract sign-off."
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "bacnha_session"
+      }
+    }
+  },
+  "paths": {
+    "/auth/me": {
+      "get": {
+        "summary": "GET /auth/me",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "POST /auth/login",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "POST /auth/logout",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "summary": "POST /auth/change-password",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "POST /auth/forgot-password",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "POST /auth/reset-password",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repositories": {
+      "get": {
+        "summary": "GET /repositories",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "repositories"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/folders": {
+      "get": {
+        "summary": "GET /folders",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /folders",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{id}": {
+      "patch": {
+        "summary": "PATCH /folders/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "DELETE /folders/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/folders/{id}/restore": {
+      "post": {
+        "summary": "POST /folders/{id}/restore",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "folders"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents": {
+      "get": {
+        "summary": "GET /documents",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}": {
+      "get": {
+        "summary": "GET /documents/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "PATCH /documents/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "DELETE /documents/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/preview": {
+      "get": {
+        "summary": "GET /documents/{id}/preview",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/download": {
+      "get": {
+        "summary": "GET /documents/{id}/download",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/original": {
+      "get": {
+        "summary": "GET /documents/{id}/original",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/restore": {
+      "post": {
+        "summary": "POST /documents/{id}/restore",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/favorite": {
+      "post": {
+        "summary": "POST /documents/{id}/favorite",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uploads": {
+      "post": {
+        "summary": "POST /uploads",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "uploads"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "folder_id": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "new",
+                      "overwrite"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs": {
+      "get": {
+        "summary": "GET /jobs",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "jobs"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/jobs/{id}/retry": {
+      "post": {
+        "summary": "POST /jobs/{id}/retry",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "jobs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions": {
+      "get": {
+        "summary": "GET /documents/{id}/versions",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /documents/{id}/versions",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "folder_id": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "new",
+                      "overwrite"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/documents/{id}/versions/{versionId}/restore": {
+      "post": {
+        "summary": "POST /documents/{id}/versions/{versionId}/restore",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/grants": {
+      "get": {
+        "summary": "GET /grants",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "grants"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /grants",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "grants"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/grants/{id}": {
+      "delete": {
+        "summary": "DELETE /grants/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "grants"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/access-requests": {
+      "post": {
+        "summary": "POST /documents/{id}/access-requests",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/access-requests": {
+      "get": {
+        "summary": "GET /access-requests",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "access-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/access-requests/{id}": {
+      "patch": {
+        "summary": "PATCH /access-requests/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "access-requests"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals": {
+      "get": {
+        "summary": "GET /approvals",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "approvals"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/documents/{id}/publication": {
+      "post": {
+        "summary": "POST /documents/{id}/publication",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "documents"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/{id}": {
+      "patch": {
+        "summary": "PATCH /approvals/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "approvals"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "summary": "GET /notifications",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "notifications"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/notifications/read": {
+      "patch": {
+        "summary": "PATCH /notifications/read",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "notifications"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "GET /users",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /users",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "patch": {
+        "summary": "PATCH /users/{id}",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imports/preview": {
+      "post": {
+        "summary": "POST /imports/preview",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "imports"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "folder_id": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "new",
+                      "overwrite"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imports/commit": {
+      "post": {
+        "summary": "POST /imports/commit",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "imports"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trash": {
+      "get": {
+        "summary": "GET /trash",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "trash"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/audit": {
+      "get": {
+        "summary": "GET /audit",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "audit"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "GET /dashboard",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/settings": {
+      "get": {
+        "summary": "GET /settings",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "settings"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "PUT /settings",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "settings"
+        ],
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token nhận từ /auth/me hoặc login cho phiên hiện tại."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export": {
+      "get": {
+        "summary": "GET /export",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "export"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "GET /health",
+        "description": "API bản phát triển. Xem README và acceptance-matrix về các giới hạn chưa nghiệm thu.",
+        "tags": [
+          "health"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "201": {
+            "description": "Đã tạo tài nguyên (POST tương ứng)"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Cần đăng nhập"
+          },
+          "403": {
+            "description": "Từ chối do ACL, scope hoặc CSRF"
+          },
+          "404": {
+            "description": "Không tìm thấy tài nguyên"
+          },
+          "409": {
+            "description": "Xung đột hoặc file chưa xử lý"
+          },
+          "429": {
+            "description": "Quá nhiều yêu cầu"
+          }
+        },
+        "security": [
+          {},
+          {
+            "cookieSession": []
+          }
+        ]
+      }
+    }
+  }
+}

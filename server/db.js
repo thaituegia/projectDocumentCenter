@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
+import roleDemoAccounts from "./role-demo-accounts.json" with { type: "json" };
 export const dataDir = path.resolve(process.env.DATA_DIR || ".data");
 fs.mkdirSync(dataDir, { recursive: true });
 export const db = new DatabaseSync(path.join(dataDir, "bacnhabook.sqlite"));
@@ -90,7 +91,10 @@ export function notify(userId, title, message, documentId = null) {
   });
 }
 export async function seed() {
-  if (one("SELECT id FROM repositories LIMIT 1")) return;
+  if (one("SELECT id FROM repositories LIMIT 1")) {
+    seedRoleDemoAccounts();
+    return;
+  }
   if (process.env.NODE_ENV === "production") return;
   const timestamp = now();
   const repos = [
@@ -536,4 +540,58 @@ export async function seed() {
   );
   for (const doc of ["d1", "d5"])
     run("INSERT INTO favorites VALUES (?,?)", "admin", doc);
+  seedRoleDemoAccounts();
+}
+
+export function seedRoleDemoAccounts() {
+  if (process.env.NODE_ENV === "production") return;
+  if (
+    process.env.NODE_ENV !== "development" &&
+    process.env.ENABLE_ROLE_DEMO_ACCOUNTS !== "true"
+  )
+    return;
+  transaction(() => {
+    for (const account of roleDemoAccounts) {
+      // Preserve password changes, locks and revoked grants on later starts.
+      if (
+        one(
+          "SELECT id FROM users WHERE email=? OR id=?",
+          account.email,
+          account.id,
+        )
+      )
+        continue;
+      insert("users", { ...account, status: "active", must_change: 1 });
+      const folders =
+        account.role === "CUSTOMER"
+          ? all("SELECT id FROM folders WHERE id='hsk1' AND deleted_at IS NULL")
+          : all(
+              "SELECT id, repository_id FROM folders WHERE parent_id IS NULL AND deleted_at IS NULL",
+            ).filter((folder) => {
+              if (account.role === "SUPER_ADMIN") return true;
+              const scope =
+                account.role === "EMPLOYEE"
+                  ? ["common", "marketing"]
+                  : [account.scope, "common"];
+              return scope.includes(folder.repository_id);
+            });
+      for (const folder of folders)
+        for (const action of ["VIEW", "DOWNLOAD"]) {
+          insert("grants", {
+            id: id(),
+            subject_type: "USER",
+            subject_id: account.id,
+            target_type: "FOLDER",
+            target_id: folder.id,
+            action,
+            effect: "ALLOW",
+            created_at: now(),
+          });
+        }
+      audit({ name: "Khởi tạo tài khoản demo" }, "DEMO_USER_CREATED", {
+        id: account.id,
+        name: account.email,
+      });
+    }
+  });
 }

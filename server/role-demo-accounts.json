@@ -1,0 +1,56 @@
+[
+  {
+    "id": "role-demo-superadmin",
+    "name": "Super Admin",
+    "email": "superadmin@demo.bacnhabook.test",
+    "role": "SUPER_ADMIN",
+    "department": "Điều hành",
+    "scope": "*",
+    "password": "$2b$12$x87qyywSrEvtEEcUe2yqF.thTkXQw/HVusNkULOV7pcSQUlrV1xQC"
+  },
+  {
+    "id": "role-demo-admin-bacnhabook",
+    "name": "Admin Bacnhabook",
+    "email": "admin-bacnhabook@demo.bacnhabook.test",
+    "role": "BOOK_ADMIN",
+    "department": "Bacnhabook",
+    "scope": "books",
+    "password": "$2b$12$8G9Br4z/gzGah0anuVpGjeEqjmKLSnv0jnK0EivKRNlxkGrVOPGQO"
+  },
+  {
+    "id": "role-demo-admin-hcns",
+    "name": "Admin HCNS",
+    "email": "admin-hcns@demo.bacnhabook.test",
+    "role": "HR_ADMIN",
+    "department": "HCNS",
+    "scope": "hr",
+    "password": "$2b$12$pL8.3Yop.MOmXIyB3yYBDeNpRWb8H32bnuds1NGlN7TYYAdZDh1va"
+  },
+  {
+    "id": "role-demo-quan-ly-kho",
+    "name": "Quản lý kho Marketing",
+    "email": "quan-ly-kho@demo.bacnhabook.test",
+    "role": "MANAGER",
+    "department": "Marketing",
+    "scope": "marketing",
+    "password": "$2b$12$A3qeIk69pNlp7dVoNykTMu5TAQZ7d9d.UzOnYY2PixSFlQ.51KGHe"
+  },
+  {
+    "id": "role-demo-nhan-vien",
+    "name": "Nhân viên nội bộ",
+    "email": "nhan-vien@demo.bacnhabook.test",
+    "role": "EMPLOYEE",
+    "department": "Marketing",
+    "scope": "",
+    "password": "$2b$12$hUmIHQai9PzaUZ9GxxxA9OhXUuuUHPHpyirPvwQEbbjGwDttI1drK"
+  },
+  {
+    "id": "role-demo-hoc-vien",
+    "name": "Khách hàng / Người học",
+    "email": "hoc-vien@demo.bacnhabook.test",
+    "role": "CUSTOMER",
+    "department": "",
+    "scope": "",
+    "password": "$2b$12$tNXsuXLkaTtE4jxFMIQLeOtGXi0AhOY76hlHHgQ34TIDEX60HxaAy"
+  }
+]

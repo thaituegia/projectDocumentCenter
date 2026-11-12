@@ -33,6 +33,21 @@ Sau khi cấu hình scanner, có thể bấm thử lại job lỗi trong giao di
 
 ## Đã có trong bản phát triển
 
+### Tài khoản demo theo vị trí
+
+Ở `NODE_ENV=development`, backend tạo thêm sáu tài khoản demo theo vai trò khi khởi động. Với môi trường local chưa đặt `NODE_ENV`, có thể chạy `ENABLE_ROLE_DEMO_ACCOUNTS=true node --input-type=module -e 'const {seed,db}=await import("./server/db.js");await seed();db.close();'` từ thư mục repository. Chế độ production không tạo các tài khoản này, kể cả khi bật cờ.
+
+| Vị trí | Email | Website / phạm vi |
+|---|---|---|
+| Super Admin | superadmin@demo.bacnhabook.test | Nội bộ / quản trị toàn hệ thống |
+| Admin Bacnhabook | admin-bacnhabook@demo.bacnhabook.test | Nội bộ / học liệu |
+| Admin HCNS | admin-hcns@demo.bacnhabook.test | Nội bộ / HCNS |
+| Quản lý kho | quan-ly-kho@demo.bacnhabook.test | Nội bộ / Marketing |
+| Nhân viên | nhan-vien@demo.bacnhabook.test | Nội bộ / tài liệu chung và Marketing |
+| Khách hàng / Người học | hoc-vien@demo.bacnhabook.test | Website học viên / HSK 1 |
+
+Mỗi tài khoản có mật khẩu ngẫu nhiên riêng, bắt buộc đổi lần đầu. Repository chỉ lưu bcrypt hash; bảng mật khẩu khởi tạo được giao riêng trong `.data/demo-account-access.md` ở môi trường chuẩn bị, không commit hoặc phục vụ qua HTTP. Khởi động lại không đặt lại mật khẩu, trạng thái khóa hoặc quyền đã thu hồi. Database demo mới trên Render Free có thể được tạo lại khi redeploy; khi đó dùng lại mật khẩu khởi tạo. Các email `.test` không nhận thư. Không dùng database hoặc tài khoản demo cho vận hành thật.
+
 - Thư viện responsive với các kho, cây thư mục/breadcrumb, bộ sưu tập HSK, tìm tên/nội dung được phép, lọc, sắp xếp, phân trang, grid/list, lưu tài liệu và lịch sử đã xem.
 - Backend SQLite, migration SQL có thể chạy lặp, seed tài liệu PDF thật với **bản xem riêng dạng văn bản**. Các định dạng hiển thị trong seed chỉ là mẫu giao diện; không phải file Office/audio/video thương mại thật.
 - Phiên cookie httpOnly, CSRF, bcrypt, giới hạn phiên/idle, chặn tài khoản khóa, đổi mật khẩu ban đầu, token khôi phục một lần. Mật khẩu mới tối thiểu 12 ký tự, chữ hoa/thường/số là tham số dev được ghi rõ.

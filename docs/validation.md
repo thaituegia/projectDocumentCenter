@@ -5,7 +5,7 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 | Lệnh / kiểm tra | Kết quả | Giới hạn |
 |---|---|---|
 | `npm run build` | PASS, Vite tạo bundle tĩnh, font tiếng Việt local | Không xác nhận deployment/UAT |
-| `npm test` | PASS, Node báo 46/46 gồm **45 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
+| `npm test` | PASS, Node báo 47/47 gồm **45 tình huống API**, 1 test cha và 1 kiểm tra provisioning demo, không fail/skip | DB tạm SQLite, object local |
 | `npm run test:e2e` | PASS, **18/18** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
 | `npm run test:production` | PASS | Chỉ smoke mode production với DB mới: bundle, health, no demo login/seed/session; chưa production-ready |
 | `npm audit --omit=dev` | PASS, 0 vulnerabilities tại thời điểm chạy | Không thay security review; phụ thuộc cần kiểm tra lại định kỳ |

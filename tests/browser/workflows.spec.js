@@ -43,6 +43,10 @@ for (const [id, label, title, repository] of [
       page.getByRole("heading", { name: title, exact: true }),
     ).toBeVisible();
     await expect(page.locator(".workspace-task")).toHaveCount(4);
+    await expect(page.locator(".workspace-primary")).toHaveCSS(
+      "background-color",
+      "rgb(151, 21, 43)",
+    );
     await expect(page.locator(".workspace-repositories")).toContainText(
       repository,
     );
@@ -115,14 +119,10 @@ test("Library, collection browsing, file preview and grid view", async ({
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.locator(".preview-paper")).toBeVisible();
-  await expect(page.locator(".watermark")).toContainText(
-    "minhanh@example.test",
-  );
-  await expect(page.locator(".watermark")).toContainText("BÁC NHÃ BOOKS");
-  await expect(page.locator(".watermark")).toContainText("THANHMAIHSK");
-  await expect(page.locator(".preview-paper .watermark > span")).toHaveCount(8);
+  await expect(page.locator(".watermark")).toHaveCount(0);
+  await expect(page.locator(".preview-paper-brand")).toHaveCount(0);
   await page.screenshot({
-    path: "test-results/branded-watermark.png",
+    path: "test-results/internal-unwatermarked.png",
     fullPage: true,
   });
   await page.getByRole("button", { name: "Đóng", exact: true }).click();
@@ -166,6 +166,27 @@ test("Customer website has its own login and access request journey", async ({
     .getByRole("button", { name: "Dùng tài khoản học viên mẫu" })
     .click();
   await expect(page.locator(".customer-profile")).toContainText("Nguyễn An");
+  await expect(page.locator(".customer-hero .button")).toHaveCSS(
+    "background-color",
+    "rgb(8, 107, 173)",
+  );
+  await page
+    .getByRole("button", {
+      name: "Giáo trình HSK 1 – Bài 01: Chào bạn",
+      exact: true,
+    })
+    .click();
+  await expect(page.locator(".preview-paper .watermark > span")).toHaveCount(8);
+  await expect(page.locator(".watermark")).toContainText(
+    "nguyenan@example.test",
+  );
+  await expect(page.locator(".watermark")).toContainText("BÁC NHÃ BOOKS");
+  await expect(page.locator(".watermark")).toContainText("THANHMAIHSK");
+  await page.screenshot({
+    path: "test-results/customer-watermarked.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: "Đóng", exact: true }).click();
   await page
     .getByRole("button", {
       name: "Ngữ pháp HSK 3 – Tổng hợp kiến thức",

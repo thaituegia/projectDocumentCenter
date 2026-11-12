@@ -105,7 +105,49 @@ await test("Bacnhabook functional API and permission regression suite", async (t
     assert.equal(r.body.object_key, undefined);
     assert.equal(r.body.watermark_brand, "BÁC NHÃ BOOKS · THANHMAIHSK");
     assert.equal(r.body.watermark, "Khách · Guest");
+    assert.equal(r.body.watermark_enabled, true);
+    const anonymousInternal = await client().call("/documents/d1/preview");
+    assert.equal(anonymousInternal.status, 401);
   });
+  await t.test(
+    "All internal roles preview and download without watermark",
+    async () => {
+      const original = await admin.call("/documents/d1/original");
+      for (const userId of [
+        "admin",
+        "book-admin",
+        "hr-admin",
+        "manager",
+        "employee",
+      ]) {
+        const internal = client();
+        await internal.login(userId);
+        const grantId = id();
+        insert("grants", {
+          id: grantId,
+          subject_type: "USER",
+          subject_id: userId,
+          target_type: "FILE",
+          target_id: "d1",
+          action: "DOWNLOAD",
+          effect: "ALLOW",
+          created_at: now(),
+        });
+        try {
+          const preview = await internal.call("/documents/d1/preview");
+          assert.equal(preview.status, 200, userId);
+          assert.equal(preview.body.watermark_enabled, false, userId);
+          assert.equal(preview.body.watermark, null, userId);
+          assert.equal(preview.body.watermark_brand, null, userId);
+          const download = await internal.call("/documents/d1/download");
+          assert.equal(download.status, 200, userId);
+          assert.deepEqual(download.rawBytes, original.rawBytes, userId);
+        } finally {
+          run("DELETE FROM grants WHERE id=?", grantId);
+        }
+      }
+    },
+  );
   await t.test(
     "Guest cannot read Private preview by manually calling API",
     async () => {
@@ -128,7 +170,9 @@ await test("Bacnhabook functional API and permission regression suite", async (t
     "PDF delivery is watermarked on every page and preserves the stored original",
     async () => {
       const original = await admin.call("/documents/d1/original");
-      const download = await customer.call("/documents/d1/download");
+      const download = await customer.call(
+        "/documents/d1/download?watermark=false",
+      );
       assert.equal(original.status, 200);
       assert.equal(download.status, 200);
       assert.notDeepEqual(download.rawBytes, original.rawBytes);
@@ -160,6 +204,7 @@ await test("Bacnhabook functional API and permission regression suite", async (t
       assert.deepEqual(unchanged.rawBytes, original.rawBytes);
       const preview = await customer.call("/documents/d1/preview");
       assert.equal(preview.body.watermark, "nguyenan@example.test");
+      assert.equal(preview.body.watermark_enabled, true);
     },
   );
   await t.test(

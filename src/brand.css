@@ -135,8 +135,8 @@
   margin-bottom: 24px;
 }
 .customer-hero .button {
-  background: var(--brand-red);
-  border-color: var(--brand-red);
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
 }
 .customer-hero h1 em {
   color: var(--brand-blue);
@@ -148,7 +148,93 @@
   color: var(--brand-blue);
 }
 .customer-header nav > button.active::after {
-  background: var(--brand-red);
+  background: var(--brand-blue);
+}
+
+/* Internal accounts share the red workspace; customer styles stay blue. */
+.internal-site,
+.internal-login {
+  --green: #97152b;
+  --green-dark: #721023;
+  --line: #eedde2;
+  background: #fcf9fa;
+  color: #492e36;
+}
+.internal-site .sidebar {
+  background: #faf2f4;
+  border-color: #eedde2;
+}
+.internal-site .topbar {
+  border-color: #eedde2;
+}
+.internal-site .nav-item.active,
+.internal-site .nav-item.selected,
+.internal-site .nav-item:hover {
+  background: #f1dfe4;
+  color: #97152b;
+}
+.internal-site .nav-item.active::before {
+  background: #97152b;
+}
+.internal-site .workspace-label,
+.internal-site .nav-label,
+.internal-site .topbar-breadcrumb strong {
+  color: #724b57;
+}
+.internal-site .workspace-icon,
+.internal-site .avatar,
+.internal-site .nav-count {
+  background: #f1dfe4;
+  color: #97152b;
+}
+.internal-site .role-workspace {
+  --workspace-accent: #97152b;
+  --workspace-soft: #faedf1;
+}
+.internal-site .workspace-welcome {
+  border-color: #eedde2;
+  border-top-color: #97152b;
+}
+.internal-site .workspace-task,
+.internal-site .workspace-repositories > button {
+  border-color: #eedde2;
+}
+.internal-site .workspace-task:hover {
+  border-color: #97152b;
+}
+.internal-site .workspace-section-heading h2,
+.internal-site .workspace-task h3,
+.internal-site .workspace-repositories strong {
+  color: #63303e;
+}
+.internal-site .collection-card,
+.internal-site .panel,
+.internal-site .document-table {
+  border-color: #eedde2;
+}
+.internal-site .eyebrow,
+.internal-site .collection-card:hover,
+.internal-site .repo-nav.selected {
+  color: #97152b;
+}
+.internal-site .button.secondary {
+  border-color: #dec1ca;
+  color: #97152b;
+}
+.internal-site button:focus-visible,
+.internal-site a:focus-visible,
+.internal-site input:focus-visible,
+.internal-login input:focus-visible {
+  outline-color: #b94d65;
+}
+.internal-login {
+  background: radial-gradient(ellipse at 30% 10%, #f7e5ea, #fcf8f9);
+}
+.internal-login-card {
+  border-color: #eedde2;
+}
+.internal-login-card h1 {
+  color: #97152b;
 }
 .preview-paper {
   position: relative;

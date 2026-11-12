@@ -38,7 +38,12 @@ import {
 import { putObject, getObject, remote } from "./storage.js";
 import { encryptMail } from "./mail.js";
 import { customerResourceCheck, roleAllowed, sessionCookie } from "./portal.js";
-import { watermarkPdf, watermarkBrand, viewerIdentity } from "./watermark.js";
+import {
+  watermarkPdf,
+  watermarkBrand,
+  viewerIdentity,
+  needsWatermark,
+} from "./watermark.js";
 export const app = express();
 app.use((req, res, next) => {
   req.portal = req.url.startsWith("/api/customer/") ? "customer" : "internal";
@@ -820,11 +825,13 @@ app.get(
       });
     audit(req.user, "DOCUMENT_VIEWED", req.doc);
     const bytes = await getObject(req.doc.preview_key);
+    const watermarked = needsWatermark(req.user);
     res.json({
       content: bytes.toString("utf8"),
       format: "text",
-      watermark: viewerIdentity(req.user),
-      watermark_brand: watermarkBrand,
+      watermark_enabled: watermarked,
+      watermark: watermarked ? viewerIdentity(req.user) : null,
+      watermark_brand: watermarked ? watermarkBrand : null,
       document: safeDoc(req.user, req.doc),
     });
   }),
@@ -844,16 +851,14 @@ app.get(
         .status(409)
         .json({ error: "Tài liệu chưa qua kiểm tra an toàn." });
     let bytes = await getObject(req.doc.object_key);
-    if (req.doc.mime === "application/pdf") {
+    if (req.doc.mime === "application/pdf" && needsWatermark(req.user)) {
       try {
         bytes = await watermarkPdf(bytes, req.user);
       } catch {
-        return res
-          .status(422)
-          .json({
-            error:
-              "Không thể tạo bản PDF có watermark. Vui lòng liên hệ quản trị viên.",
-          });
+        return res.status(422).json({
+          error:
+            "Không thể tạo bản PDF có watermark. Vui lòng liên hệ quản trị viên.",
+        });
       }
     }
     audit(req.user, "DOCUMENT_DOWNLOADED", req.doc);

@@ -1467,10 +1467,12 @@ export function Viewer({
                   className="preview-paper"
                   style={{ fontSize: zoom + "%" }}
                 >
-                  <div className="preview-paper-brand">
-                    <Brand compact />
-                    <EducationBrand />
-                  </div>
+                  {preview.watermark_enabled && (
+                    <div className="preview-paper-brand">
+                      <Brand compact />
+                      <EducationBrand />
+                    </div>
+                  )}
                   <div className="paper-rule" />
                   <h2>{preview.content.split("\n")[0]}</h2>
                   <div className="preview-text">
@@ -1485,10 +1487,14 @@ export function Viewer({
                         ),
                       )}
                   </div>
-                  <div className="paper-footer">
-                    BÁC NHÃ BOOKS · THANHMAIHSK · {preview.watermark}
-                  </div>
-                  <DocumentWatermark identity={preview.watermark} />
+                  {preview.watermark_enabled && (
+                    <div className="paper-footer">
+                      BÁC NHÃ BOOKS · THANHMAIHSK · {preview.watermark}
+                    </div>
+                  )}
+                  {preview.watermark_enabled && (
+                    <DocumentWatermark identity={preview.watermark} />
+                  )}
                 </article>
               </div>
             )

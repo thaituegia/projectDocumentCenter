@@ -4,6 +4,8 @@ import fontkit from "@pdf-lib/fontkit";
 
 export const watermarkBrand = "BÁC NHÃ BOOKS · THANHMAIHSK";
 export const viewerIdentity = (user) => user?.email || "Khách · Guest";
+// Account role is authoritative; changing API paths cannot turn stamping off.
+export const needsWatermark = (user) => !user || user.role === "CUSTOMER";
 const fontBytes = fs.readFile(
   new URL(
     "../node_modules/@fontsource/be-vietnam-pro/files/be-vietnam-pro-latin-400-normal.woff",

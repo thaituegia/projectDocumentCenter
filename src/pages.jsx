@@ -662,7 +662,9 @@ export function People({ user, version, act, setModal }) {
         title={
           user?.role === "BOOK_ADMIN"
             ? "Cộng đồng Bacnhabook"
-            : "Những người cùng đồng hành"
+            : user?.role === "HR_ADMIN"
+              ? "Quản lý nhân viên nội bộ"
+              : "Những người cùng đồng hành"
         }
         description="Quản lý tài khoản, phòng ban và quyền vận hành."
       >

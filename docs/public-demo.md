@@ -4,7 +4,7 @@ Cấu hình hiện tại thay thế mô hình website gộp trước đây bằn
 
 1. Trong Render, mở Blueprint đã kết nối repository `thaituegia/projectDocumentCenter`, nhánh `main`.
 2. Chọn Sync/Apply để cập nhật service `bacnhabook-demo` làm website **quản trị + nội bộ** và tạo `bacnhabook-hoc-lieu` làm website **học viên**.
-3. Nhập `INTERNAL_API_URL` cho service học liệu bằng URL HTTPS Render thực tế của service quản trị. Không nhập URL website học liệu vào biến này; gateway cần kết nối service giữ database.
+3. `INTERNAL_API_URL` của service học liệu đã đặt thành `https://bacnhabook-demo.onrender.com`, URL quản trị do chủ dự án cung cấp. Nếu Render đang giữ giá trị cũ, cập nhật biến này và redeploy service học liệu. Không nhập URL website học liệu vào biến này; gateway cần kết nối service giữ database.
 4. Chờ cả hai health checks thành công. Render cấp hai URL HTTPS riêng; không tự suy đoán hostname từ tên service.
 5. Mở website học liệu để duyệt Public hoặc dùng tài khoản học viên mẫu. Mở website quản trị để dùng tài khoản quản trị/nhân viên minh họa.
 

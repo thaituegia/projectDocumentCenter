@@ -1,10 +1,108 @@
 import { test, expect } from "@playwright/test";
+
+for (const [id, label, title, repository] of [
+  ["admin", "Super Admin", "Quản trị toàn hệ thống", "Học liệu Bacnhabook"],
+  [
+    "book-admin",
+    "Admin Bacnhabook",
+    "Không gian quản trị học liệu",
+    "Học liệu Bacnhabook",
+  ],
+  ["hr-admin", "HCNS", "Không gian quản trị HCNS", "Hành chính nhân sự"],
+  [
+    "manager",
+    "Quản lý Marketing",
+    "Không gian quản lý phòng ban",
+    "Phòng Marketing",
+  ],
+  [
+    "employee",
+    "Nhân viên",
+    "Tài liệu cho công việc của bạn",
+    "Tài liệu công ty",
+  ],
+]) {
+  test(`Role workspace: ${id} opens its own tasks and default repository`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", {
+        name: "Quản trị toàn hệ thống",
+        exact: true,
+      }),
+    ).toBeVisible();
+    if (id !== "admin") {
+      await page.locator(".profile").click();
+      await page
+        .locator(".profile-dropdown")
+        .getByRole("button", { name: label, exact: true })
+        .click();
+    }
+    await expect(
+      page.getByRole("heading", { name: title, exact: true }),
+    ).toBeVisible();
+    await expect(page.locator(".workspace-task")).toHaveCount(4);
+    await expect(page.locator(".workspace-repositories")).toContainText(
+      repository,
+    );
+    const toastClose = page.locator(".toast > button");
+    if (await toastClose.isVisible()) await toastClose.click();
+    await page.screenshot({
+      path: `test-results/workspace-${id}.png`,
+      fullPage: true,
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator(".sidebar")).not.toBeInViewport();
+    await expect(page.locator(".workspace-task").first()).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: `test-results/workspace-${id}-mobile.png`,
+      fullPage: true,
+    });
+    await page.locator(".workspace-primary").click();
+    await expect(
+      page.getByRole("heading", { name: repository, exact: true }),
+    ).toBeVisible();
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: repository, exact: true }),
+    ).toBeVisible();
+    if (id !== "admin") {
+      await page.goto("/settings");
+      await expect(
+        page.getByRole("heading", {
+          name: "Bạn không có quyền truy cập trang này",
+        }),
+      ).toBeVisible();
+      expect(
+        await page.evaluate(() => fetch("/api/settings").then((r) => r.status)),
+      ).toBe(403);
+    }
+    if (id === "employee") {
+      await page.goto("/people");
+      await expect(
+        page.getByRole("heading", {
+          name: "Bạn không có quyền truy cập trang này",
+        }),
+      ).toBeVisible();
+      expect(
+        await page.evaluate(() => fetch("/api/users").then((r) => r.status)),
+      ).toBe(403);
+    }
+  });
+}
+
 test("Library, collection browsing, file preview and grid view", async ({
   page,
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/");
+  await page.goto("/library");
   await expect(
     page.getByRole("heading", { name: "Học liệu Bacnhabook", exact: true }),
   ).toBeVisible();
@@ -26,7 +124,7 @@ test("Library, collection browsing, file preview and grid view", async ({
   expect(errors).toEqual([]);
 });
 test("Search, type filter and empty state", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page.locator("#global-search").fill("Sổ tay");
   await expect(page.locator(".document-table tbody tr")).toHaveCount(1);
   await expect(page.locator(".document-table")).toContainText("300 từ vựng");
@@ -41,7 +139,7 @@ test("Search, type filter and empty state", async ({ page }) => {
 test("Create a folder and see server-persisted data after reload", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page.getByRole("button", { name: "Tạo thư mục", exact: true }).click();
   const name = "Thư mục kiểm thử " + Date.now();
   await page.getByRole("textbox", { name: "Tên thư mục" }).fill(name);
@@ -83,7 +181,7 @@ test("Customer website has its own login and access request journey", async ({
 test("Dashboard, people, audit and settings pages render real data", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page.getByRole("button", { name: "Tổng quan", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Bức tranh tri thức" }),
@@ -109,7 +207,7 @@ test("Mobile navigation, viewer and modal do not overflow", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/library");
   await expect(page.locator(".document-table")).toBeVisible();
   await page.getByRole("button", { name: "Mở menu", exact: true }).click();
   await page
@@ -141,7 +239,7 @@ test("Mobile navigation, viewer and modal do not overflow", async ({
 test("Role switch hides admin menus; API still enforces scope", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page.locator(".profile").click();
   await page
     .getByRole("button", { name: "Admin Bacnhabook", exact: true })
@@ -168,7 +266,7 @@ test("Role switch hides admin menus; API still enforces scope", async ({
 test("Document editing and permissions persist through the UI", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page
     .locator(".document-name")
     .filter({ hasText: "Giáo trình HSK 1 – Bài 01: Chào bạn" })
@@ -198,7 +296,7 @@ test("Document editing and permissions persist through the UI", async ({
 test("File upload creates a real queued record and reports safe pending state", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page
     .getByRole("button", { name: "Tải tài liệu lên", exact: true })
     .click();
@@ -229,7 +327,7 @@ test("Separate websites keep sessions isolated and show shared document updates"
   page,
   context,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await expect(page.locator(".profile-name")).toContainText("Minh Anh");
   const customerPage = await context.newPage();
   await customerPage.goto("http://127.0.0.1:3003/");
@@ -341,7 +439,7 @@ test("Vietnamese regular and italic headings load complete fonts on desktop and 
 test("Internal website has a distinct login wall after logout", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/library");
   await page.locator(".profile").click();
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
   await expect(

@@ -34,4 +34,4 @@ services:
       - key: SERVE_BUILD
         value: "true"
       - key: INTERNAL_API_URL
-        sync: false
+        value: https://bacnhabook-demo.onrender.com

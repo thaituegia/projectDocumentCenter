@@ -87,6 +87,7 @@ import {
 } from "./pages";
 import "./styles.css";
 import "./internal.css";
+import { Workspace, workspaces, preferredRepository } from "./workspaces";
 function App() {
   const [user, setUser] = useState(null),
     [ready, setReady] = useState(false),
@@ -158,7 +159,7 @@ function App() {
           sessionStorage.setItem("bacnha-visited", "yes");
         }
         setUser(me.user);
-        if (me.user?.role === "EMPLOYEE") setRepo("common");
+        setRepo("");
         setCsrf(me.csrf);
       } catch (e) {
         setError(e.message);
@@ -178,7 +179,11 @@ function App() {
       .then(([r, f]) => {
         setRepositories(r);
         setFolders(f);
-        if (!r.some((x) => x.id === repo)) setRepo("books");
+        setRepo((selected) =>
+          r.some((x) => x.id === selected)
+            ? selected
+            : preferredRepository(user?.role, r),
+        );
       })
       .catch((e) => setError(e.message));
     if (user) {
@@ -296,6 +301,7 @@ function App() {
       .catch(() => say(link));
   };
   const navItems = [
+    { path: "/workspace", label: "Trang làm việc", icon: LayoutDashboard },
     { path: "/library", label: "Thư viện tài liệu", icon: Library },
     { path: "/favorites", label: "Đã lưu", icon: Star },
     { path: "/recent", label: "Gần đây", icon: Clock },
@@ -311,7 +317,12 @@ function App() {
     { path: "/approvals", label: "Phê duyệt tài liệu", icon: ShieldCheck },
     {
       path: "/people",
-      label: user?.role === "BOOK_ADMIN" ? "Khách hàng" : "Người dùng",
+      label:
+        user?.role === "BOOK_ADMIN"
+          ? "Khách hàng"
+          : user?.role === "HR_ADMIN"
+            ? "Nhân viên nội bộ"
+            : "Người dùng",
       icon: Users,
     },
     { path: "/audit", label: "Nhật ký hoạt động", icon: ScrollText },
@@ -321,6 +332,8 @@ function App() {
       : []),
   ];
   const titleMap = {
+    "/workspace": "Trang làm việc",
+    "/": "Trang làm việc",
     "/dashboard": "Tổng quan",
     "/requests": "Yêu cầu truy cập",
     "/approvals": "Phê duyệt tài liệu",
@@ -331,7 +344,7 @@ function App() {
     "/notifications": "Thông báo",
   };
   const isLibrary =
-    ["/", "/library", "/bacnhabook", "/favorites", "/recent"].includes(page) ||
+    ["/library", "/bacnhabook", "/favorites", "/recent"].includes(page) ||
     page.startsWith("/library/folders/");
   const common = {
     user,
@@ -347,11 +360,16 @@ function App() {
   };
   const onAuthenticated = (me) => {
     setUser(me.user);
-    setRepo(me.user?.role === "EMPLOYEE" ? "common" : "books");
+    setRepo("");
+    setFolder(null);
+    setRepositories([]);
+    setFolders([]);
+    setDocs([]);
     setCsrf(me.csrf);
     setModal(null);
     setProfileOpen(false);
     refresh();
+    navigate("/workspace");
     say("Đăng nhập thành công");
   };
   const switchRole = async (userId) => {
@@ -361,7 +379,6 @@ function App() {
         body: { userId },
       });
       onAuthenticated(me);
-      navigate("/library");
     } catch (e) {
       say(e.message, true);
     }
@@ -411,7 +428,7 @@ function App() {
       </div>
     );
   return (
-    <div className="app-shell internal-site">
+    <div className={`app-shell internal-site role-${user.role.toLowerCase()}`}>
       {mobile && (
         <div className="sidebar-scrim" onClick={() => setMobile(false)} />
       )}
@@ -435,7 +452,7 @@ function App() {
         <div className="workspace-label">
           <span className="workspace-icon">B</span>
           <div>
-            Quản trị & Nội bộ
+            {workspaces[user.role]?.name || "Quản trị & Nội bộ"}
             <small>
               {development ? "Không gian trải nghiệm" : "Trung tâm tài liệu"}
             </small>
@@ -447,7 +464,7 @@ function App() {
           {navItems.map((n) => (
             <button
               key={n.path}
-              className={`nav-item ${page === n.path || (n.path === "/library" && (page === "/" || page.startsWith("/library/"))) ? "active" : ""}`}
+              className={`nav-item ${page === n.path || (n.path === "/workspace" && page === "/") || (n.path === "/library" && page.startsWith("/library/")) ? "active" : ""}`}
               onClick={() => navigate(n.path)}
             >
               <n.icon size={19} />
@@ -689,6 +706,28 @@ function App() {
               onAuthenticated={onAuthenticated}
               say={say}
               inline
+            />
+          ) : (page === "/settings" && user.role !== "SUPER_ADMIN") ||
+            ([
+              "/dashboard",
+              "/people",
+              "/approvals",
+              "/audit",
+              "/trash",
+            ].includes(page) &&
+              !isAdmin) ? (
+            <Empty title="Bạn không có quyền truy cập trang này">
+              <Button onClick={() => navigate("/workspace")}>
+                Về trang làm việc
+              </Button>
+            </Empty>
+          ) : page === "/" || page === "/workspace" ? (
+            <Workspace
+              user={user}
+              repositories={repositories}
+              navigate={navigate}
+              pending={pending}
+              unread={unread}
             />
           ) : page.startsWith("/library/files/") ? (
             <Viewer

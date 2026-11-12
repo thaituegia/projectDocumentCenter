@@ -6,7 +6,7 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 |---|---|---|
 | `npm run build` | PASS, Vite tạo bundle tĩnh, font tiếng Việt local | Không xác nhận deployment/UAT |
 | `npm test` | PASS, Node báo 43/43 gồm **42 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
-| `npm run test:e2e` | PASS, **13/13** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
+| `npm run test:e2e` | PASS, **18/18** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
 | `npm run test:production` | PASS | Chỉ smoke mode production với DB mới: bundle, health, no demo login/seed/session; chưa production-ready |
 | `npm audit --omit=dev` | PASS, 0 vulnerabilities tại thời điểm chạy | Không thay security review; phụ thuộc cần kiểm tra lại định kỳ |
 | Desktop screenshot | 1440×1080 viewport, full page; không pageerror/console error | [Học liệu desktop](screenshots/customer-desktop.png) |
@@ -17,7 +17,7 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 
 Guest listing filename nhưng không nhận metadata nhạy cảm; public preview được phép; private preview 403; VIEW-only không original; DOWNLOAD cần flag + ACL; Deny ancestor; grant expired/future; department membership; admin ngoài scope; chống nâng role; search không leak nội dung; CSRF; folder duplicate/cycle/scope; soft-delete subtree; favorites; request idempotency và grant sau approve; tạo account hash + encrypted outbox; duplicate không reset password/email; bắt đổi mật khẩu lần đầu; khóa user revoke session; reviewer/self-approval/reject reason; nested upload pending_scan; scanner thiếu cấu hình fail closed; date validation; soft restore; Excel preview/commit idempotency; own notifications; audit/dashboard scope; version restore scope; password recovery one-time; idle/concurrency; backup/restore checksum; malformed origin; production từ chối demo; logout revoke.
 
-## 13 hành trình browser
+## 18 hành trình browser
 
 1. Thư viện → grid/list → preview/watermark → bộ sưu tập.
 2. Search → kết quả → empty state → lọc âm thanh.
@@ -33,6 +33,8 @@ Guest listing filename nhưng không nhận metadata nhạy cảm; public previe
 11. Website học viên không có sidebar quản trị, không gọi được API nội bộ, không đọc tài liệu HCNS.
 12. Noto Serif regular/italic tải đủ ký tự tiếng Việt, screenshot desktop/mobile, không tràn ngang.
 13. Website nội bộ có trang đăng nhập riêng khi đăng xuất, không hiển thị thư viện Guest.
+
+14–18. Trang làm việc riêng cho Super Admin, Admin Bacnhabook, HCNS, quản lý kho và nhân viên: đúng tiêu đề/nhiệm vụ, kho mặc định sau khi chuyển vai trò và reload, responsive 390×844, chặn trang cài đặt với vai trò không phải Super Admin cả UI và API; nhân viên cũng bị chặn trang/API người dùng. Ảnh từng vai trò được tạo tại `test-results/workspace-<id>.png` và `test-results/workspace-<id>-mobile.png` (output ignored).
 
 ## Chưa được kiểm chứng / chưa đủ release
 

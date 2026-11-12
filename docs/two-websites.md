@@ -23,6 +23,22 @@ Chỉ service internal giữ SQLite/objects. Service customer không seed/copy d
 
 ## Chạy local
 
+### Trang làm việc theo vai trò (BR-21 / UX-01)
+
+Website nội bộ mở `/` hoặc `/workspace` với trang làm việc phù hợp tài khoản đang đăng nhập. Đăng nhập hoặc đổi vai trò demo đưa về trang này, xóa trạng thái kho/thư mục của tài khoản trước. Thư viện vẫn ở `/library`.
+
+| Vai trò | Trang làm việc và thao tác chính | Kho mặc định |
+|---|---|---|
+| Super Admin | Tổng quan vận hành, tài khoản/vai trò, cấu hình, nhật ký | Học liệu Bacnhabook |
+| Admin Bacnhabook | Học liệu, tài khoản học viên, yêu cầu cấp quyền, phê duyệt | Học liệu Bacnhabook |
+| Admin HCNS | Nhân viên nội bộ, hồ sơ HCNS, yêu cầu hồ sơ, nhật ký | Hành chính nhân sự |
+| Quản lý kho | Kho được giao, phê duyệt, cấp quyền, hoạt động kho | Kho đầu tiên có quyền quản lý |
+| Nhân viên | Tra cứu, tài liệu đã lưu, gần đây, yêu cầu cá nhân | Tài liệu công ty |
+
+Các thẻ kho và số yêu cầu/thông báo lấy từ API hiện có. Nếu kho mặc định không được trả về, chọn kho được quản lý hoặc kho đầu tiên được phép liệt kê. Quyền quản lý không tự cấp quyền đọc nội dung; VIEW/DOWNLOAD tiếp tục do backend kiểm tra. Truy cập trực tiếp trang quản trị ngoài vai trò hiển thị thông báo không có quyền, API vẫn từ chối độc lập.
+
+Website học viên có giao diện riêng, không dùng trang làm việc nội bộ. Học viên xem/tải theo ACL; tên tài liệu chưa được cấp quyền vẫn có thể xuất hiện với biểu tượng khóa và luồng yêu cầu truy cập theo BR-09.
+
 ```bash
 # Terminal 1: dữ liệu + quản trị/nội bộ, cổng 3000
 npm run dev

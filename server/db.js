@@ -93,6 +93,7 @@ export function notify(userId, title, message, documentId = null) {
 export async function seed() {
   if (one("SELECT id FROM repositories LIMIT 1")) {
     seedRoleDemoAccounts();
+    await seedExtendedSampleData();
     return;
   }
   if (process.env.NODE_ENV === "production") return;
@@ -541,13 +542,30 @@ export async function seed() {
   for (const doc of ["d1", "d5"])
     run("INSERT INTO favorites VALUES (?,?)", "admin", doc);
   seedRoleDemoAccounts();
+  await seedExtendedSampleData();
+}
+
+async function seedExtendedSampleData() {
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.ENABLE_SAMPLE_DATA === "false"
+  )
+    return;
+  if (
+    process.env.NODE_ENV !== "development" &&
+    process.env.ENABLE_SAMPLE_DATA !== "true"
+  )
+    return;
+  const { seedSampleData } = await import("./sample-data.js");
+  await seedSampleData();
 }
 
 export function seedRoleDemoAccounts() {
   if (process.env.NODE_ENV === "production") return;
   if (
     process.env.NODE_ENV !== "development" &&
-    process.env.ENABLE_ROLE_DEMO_ACCOUNTS !== "true"
+    process.env.ENABLE_ROLE_DEMO_ACCOUNTS !== "true" &&
+    process.env.ENABLE_SAMPLE_DATA !== "true"
   )
     return;
   transaction(() => {

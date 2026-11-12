@@ -5,7 +5,7 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 | Lệnh / kiểm tra | Kết quả | Giới hạn |
 |---|---|---|
 | `npm run build` | PASS, Vite tạo bundle tĩnh, font tiếng Việt local | Không xác nhận deployment/UAT |
-| `npm test` | PASS, Node báo 47/47 gồm **45 tình huống API**, 1 test cha và 1 kiểm tra provisioning demo, không fail/skip | DB tạm SQLite, object local |
+| `npm test` | PASS, Node báo 48/48 gồm **45 tình huống API**, 1 test cha, 1 kiểm tra provisioning demo và 1 kiểm tra bộ mẫu/HTTP UAT, không fail/skip | DB tạm SQLite, object local |
 | `npm run test:e2e` | PASS, **18/18** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
 | `npm run test:production` | PASS | Chỉ smoke mode production với DB mới: bundle, health, no demo login/seed/session; chưa production-ready |
 | `npm audit --omit=dev` | PASS, 0 vulnerabilities tại thời điểm chạy | Không thay security review; phụ thuộc cần kiểm tra lại định kỳ |
@@ -42,6 +42,13 @@ Guest listing filename nhưng không nhận metadata nhạy cảm; public previe
 - Bản xem khách hàng có tám cụm watermark chứa hai thương hiệu và email của phiên đăng nhập; assertion trong hành trình Customer. Bản xem nội bộ không có watermark, header hay footer thương hiệu trên trang nội dung. Watermark nằm trong trang nội dung để theo phần phóng to và canvas toàn màn hình.
 - API regression xác nhận năm vai trò nội bộ tải PDF trùng byte với original; khách hàng vẫn có watermark kể cả thêm `watermark=false`. Bản PDF tải cho khách hàng có các lệnh vẽ watermark trên từng trang, giữ số trang, và original trước/sau tải không thay đổi byte; PDF không đọc được trả 422.
 - Kiểm tra bổ sung bằng `pdftotext -raw` trên PDF mẫu hai trang: mỗi trang chứa hai lần “BÁC NHÃ BOOKS”, “THANHMAIHSK” và email người xem; đã render trang mẫu để kiểm tra trực quan. Không xác nhận watermark nhúng cho file tải không phải PDF.
+
+## Bộ dữ liệu dùng thử mở rộng
+
+- `npm run seed:sample`: tạo 60 PDF thật trong 12 thư mục, chạy lại giữ nguyên số lượng và chỉnh sửa của người dùng. Test độc lập kiểm tra đủ các trạng thái, PDF parse được, ACL khách/nội bộ và cấm tạo mẫu trong production.
+- HTTP trong database tạm: khách xem có watermark, nội bộ không watermark; file chỉ xem không tải; Deny chặn VIEW; học viên chưa được cấp HSK 2 bị chặn, Admin Bacnhabook duyệt yêu cầu xong thì mở được; quản lý Marketing phê duyệt tài liệu; nhân viên không xem được hồ sơ HCNS. Preview import nhận đúng dòng mới/lỗi/trùng.
+- `npm run sample:pack`: ZIP khoảng 1 MB, kiểm tra CRC toàn bộ, đủ 60 PDF chính trong 12 thư mục. Đọc lại các workbook: 60 dòng danh mục, 12 dòng import hợp lệ, 5 dòng import có lỗi, 24 kịch bản phản hồi đều “Chưa chạy”. Không chứa database, khóa hoặc file mật khẩu. PDF HCNS mẫu trích xuất đúng chữ tiếng Việt bằng `pdftotext -raw`.
+- Các xác nhận trên là kiểm tra chức năng cục bộ; không thay cho kết quả UAT do các bên tự thực hiện hoặc xác nhận bản đã deploy trên Render.
 
 ## Chưa được kiểm chứng / chưa đủ release
 

@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "seed:sample": "node scripts/seed-samples.mjs",
+    "sample:pack": "node scripts/create-sample-pack.mjs",
     "dev": "node server/launch.js",
     "build": "vite build",
     "start": "NODE_ENV=production node server/launch.js",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@vitejs/plugin-react": "^5.1.0",
+    "archiver": "^8.0.0",
     "prettier": "^3.9.10",
     "vite": "^7.2.2"
   },

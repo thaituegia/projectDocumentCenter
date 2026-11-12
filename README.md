@@ -72,6 +72,12 @@ Không cần nhập khóa ngay để trải nghiệm local. Khóa bí mật khô
 
 ## Kiểm thử
 
+### Bộ dữ liệu để gửi các bên dùng thử
+
+Xem [hướng dẫn UAT theo vai trò](docs/uat-guide.md). Chạy `npm run seed:sample` để bổ sung 60 PDF giả lập trong 12 thư mục; ở `NODE_ENV=development`, backend tự bổ sung sau khi deploy. Có dữ liệu công khai/riêng tư, chỉ xem, Deny, hai yêu cầu quyền, sáu tài liệu chờ duyệt, phiên bản, hiệu lực và thùng rác. Bộ mẫu chỉ thêm dữ liệu, không reset kết quả dùng thử; production không tạo bộ mẫu. Đặt `ENABLE_SAMPLE_DATA=false` nếu cần tắt tự bổ sung trong development.
+
+Chạy `npm run sample:pack` để tạo `.data/uat-bacnhabook.zip`: 60 PDF thật, danh mục Excel, hai file Excel import học viên, hướng dẫn PDF/Markdown và bảng phản hồi 24 kịch bản. Mặc định không ghi đè file ZIP đã có; muốn xuất lại, truyền tên file khác, ví dụ `npm run sample:pack -- .data/uat-bacnhabook-lan-2.zip`. Gói chia sẻ không chứa mật khẩu, database hoặc khóa dịch vụ. Phát tài khoản riêng theo vai trò, không đưa bảng mật khẩu vào gói gửi rộng rãi.
+
 ### Nhận diện thương hiệu và watermark
 
 Website quản trị/nhân viên nội bộ dùng theme đỏ đô ThanhmaiHSK (`#97152b`); website khách hàng/người học dùng theme xanh Bác Nhã Books (`#086bad` → `#30336c`). Giữ màu nhận diện gốc của wordmark thương hiệu.

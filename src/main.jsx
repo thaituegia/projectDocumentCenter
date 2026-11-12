@@ -406,7 +406,6 @@ function App() {
       <div className="internal-login">
         <div className="internal-login-card">
           <div className="internal-login-brand">
-            <Brand />
             <span>QUẢN TRỊ & NỘI BỘ</span>
           </div>
           <h1>Không gian làm việc nội bộ</h1>

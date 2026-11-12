@@ -38,6 +38,7 @@ import {
 import { putObject, getObject, remote } from "./storage.js";
 import { encryptMail } from "./mail.js";
 import { customerResourceCheck, roleAllowed, sessionCookie } from "./portal.js";
+import { watermarkPdf, watermarkBrand, viewerIdentity } from "./watermark.js";
 export const app = express();
 app.use((req, res, next) => {
   req.portal = req.url.startsWith("/api/customer/") ? "customer" : "internal";
@@ -822,7 +823,8 @@ app.get(
     res.json({
       content: bytes.toString("utf8"),
       format: "text",
-      watermark: req.user?.email || "Bacnhabook · Khách",
+      watermark: viewerIdentity(req.user),
+      watermark_brand: watermarkBrand,
       document: safeDoc(req.user, req.doc),
     });
   }),
@@ -841,8 +843,20 @@ app.get(
       return res
         .status(409)
         .json({ error: "Tài liệu chưa qua kiểm tra an toàn." });
+    let bytes = await getObject(req.doc.object_key);
+    if (req.doc.mime === "application/pdf") {
+      try {
+        bytes = await watermarkPdf(bytes, req.user);
+      } catch {
+        return res
+          .status(422)
+          .json({
+            error:
+              "Không thể tạo bản PDF có watermark. Vui lòng liên hệ quản trị viên.",
+          });
+      }
+    }
     audit(req.user, "DOCUMENT_DOWNLOADED", req.doc);
-    const bytes = await getObject(req.doc.object_key);
     res
       .type(req.doc.mime)
       .attachment(

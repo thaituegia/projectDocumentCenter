@@ -118,6 +118,13 @@ test("Library, collection browsing, file preview and grid view", async ({
   await expect(page.locator(".watermark")).toContainText(
     "minhanh@example.test",
   );
+  await expect(page.locator(".watermark")).toContainText("BÁC NHÃ BOOKS");
+  await expect(page.locator(".watermark")).toContainText("THANHMAIHSK");
+  await expect(page.locator(".preview-paper .watermark > span")).toHaveCount(8);
+  await page.screenshot({
+    path: "test-results/branded-watermark.png",
+    fullPage: true,
+  });
   await page.getByRole("button", { name: "Đóng", exact: true }).click();
   await page.locator(".collection-card").first().click();
   await expect(page.locator(".document-table tbody tr")).toHaveCount(4);

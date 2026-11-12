@@ -4,23 +4,23 @@
   align-items: center;
   justify-content: center;
   padding: 30px;
-  background: radial-gradient(ellipse at 30% 10%, #eaf0e1, #f8faf4);
+  background: radial-gradient(ellipse at 30% 10%, #e0e8f1, #f4f7fa);
 }
 .internal-login-card {
   width: 465px;
   max-width: 100%;
   background: #fffefb;
   padding: 35px;
-  border: 1px solid #dfe8d4;
+  border: 1px solid #d3dde9;
   border-radius: 14px;
-  box-shadow: 0 14px 55px #23412a0a;
+  box-shadow: 0 14px 55px #2130420a;
 }
 .internal-login-brand {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  color: #58774a;
+  color: #485e79;
 }
 .internal-login-brand strong {
   font-size: 22px;
@@ -32,7 +32,7 @@
   width: 100%;
   font-size: 8px;
   letter-spacing: 2px;
-  color: #9aab88;
+  color: #8698ad;
   margin-top: 4px;
 }
 .internal-login-card h1 {
@@ -41,11 +41,11 @@
   font-weight: 400;
   line-height: 1.7;
   margin-top: 29px;
-  color: #496a3d;
+  color: #3b516c;
 }
 .internal-login-card > p {
   font-size: 10px;
-  color: #a1b18f;
+  color: #8d9eb3;
   line-height: 1.9;
   margin: 10px 0 25px;
 }
@@ -53,8 +53,8 @@
   font-size: 11px;
 }
 .role-workspace {
-  --workspace-accent: #496a3d;
-  --workspace-soft: #eef2e7;
+  --workspace-accent: #3b516c;
+  --workspace-soft: #e6ecf3;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -75,7 +75,7 @@
   justify-content: space-between;
   gap: 30px;
   padding: 36px 40px;
-  border: 1px solid #e2e6dc;
+  border: 1px solid #dce0e6;
   background: linear-gradient(120deg, #fffefb, var(--workspace-soft));
   border-radius: 16px;
 }
@@ -85,7 +85,7 @@
 .workspace-greeting {
   margin: 27px 0 8px;
   font-size: 13px;
-  color: #737d6a;
+  color: #69727e;
 }
 .workspace-welcome h1 {
   font-family: "Noto Serif", serif;
@@ -99,7 +99,7 @@
   max-width: 590px;
   font-size: 13px;
   line-height: 1.9;
-  color: #77816e;
+  color: #6d7682;
 }
 .workspace-primary {
   display: inline-flex;
@@ -135,7 +135,7 @@
   flex-wrap: wrap;
   gap: 12px 26px;
   margin: 22px 0 34px;
-  color: #748168;
+  color: #677382;
   font-size: 12px;
 }
 .workspace-status > span,
@@ -160,12 +160,12 @@
 }
 .workspace-section-heading h2 {
   margin: 0;
-  color: #44563b;
+  color: #3a4757;
   font-size: 17px;
   font-weight: 500;
 }
 .workspace-section-heading > span {
-  color: #94a089;
+  color: #8893a1;
   font-size: 11px;
 }
 .workspace-task-grid {
@@ -177,7 +177,7 @@
   position: relative;
   text-align: left;
   padding: 24px;
-  border: 1px solid #e4e8de;
+  border: 1px solid #dee2e8;
   background: #fffefb;
   border-radius: 12px;
   cursor: pointer;
@@ -201,18 +201,18 @@
   position: absolute;
   right: 24px;
   top: 28px;
-  color: #94a089;
+  color: #8893a1;
 }
 .workspace-task h3 {
   font-size: 15px;
   font-weight: 500;
   margin: 18px 0 9px;
-  color: #44563b;
+  color: #3a4757;
 }
 .workspace-task p {
   margin: 0;
   font-size: 12px;
-  color: #85907b;
+  color: #7a8491;
   line-height: 1.8;
 }
 .workspace-repositories {
@@ -224,14 +224,14 @@
   text-align: left;
   align-items: center;
   gap: 16px;
-  border: 1px solid #e4e8de;
+  border: 1px solid #dee2e8;
   background: #fffefb;
   border-radius: 9px;
   padding: 18px 20px;
   margin-bottom: 10px;
   cursor: pointer;
   font: inherit;
-  color: #53664a;
+  color: #495667;
 }
 .workspace-repo-icon {
   display: inline-flex;
@@ -248,7 +248,7 @@
 .workspace-repositories small {
   display: block;
   font-size: 11px;
-  color: #8b9683;
+  color: #828b97;
   margin-top: 7px;
   line-height: 1.8;
 }
@@ -261,7 +261,7 @@
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #8b9683;
+  color: #828b97;
   margin-top: 18px;
   line-height: 1.8;
 }

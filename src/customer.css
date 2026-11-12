@@ -1,13 +1,13 @@
 .customer-site {
   min-height: 100vh;
-  background: #fbfcf8;
-  color: #294637;
+  background: #f8fafc;
+  color: #283647;
   display: flex;
   flex-direction: column;
 }
 .customer-header {
   background: #fff;
-  border-bottom: 1px solid #e5eadd;
+  border-bottom: 1px solid #dce3eb;
   position: relative;
   z-index: 30;
 }
@@ -37,7 +37,7 @@
   font-size: 7px;
   letter-spacing: 1.8px;
   font-weight: 500;
-  color: #95a082;
+  color: #808fa2;
   margin-top: 7px;
 }
 .customer-header nav {
@@ -49,12 +49,12 @@
 }
 .customer-header nav > button {
   font-size: 12px;
-  color: #8a9980;
+  color: #7f8b9a;
   padding: 10px 0;
   white-space: nowrap;
 }
 .customer-header nav > button.active {
-  color: #355b3c;
+  color: #33465d;
   font-weight: 600;
 }
 .customer-header-actions {
@@ -77,17 +77,17 @@
   width: 33px;
 }
 .customer-profile > svg {
-  color: #95a287;
+  color: #8693a3;
 }
 .customer-demo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  background: #f0f4e7;
+  background: #e6edf5;
   padding: 9px max(35px, calc((100vw - 1250px) / 2));
-  border-bottom: 1px solid #e7eddb;
-  color: #8ca079;
+  border-bottom: 1px solid #dae3ee;
+  color: #778aa2;
   font-size: 9px;
   line-height: 1.8;
 }
@@ -98,7 +98,7 @@
 }
 .customer-demo > button {
   font-size: 9px;
-  color: #66894f;
+  color: #4c698c;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -114,8 +114,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(110deg, #edf2e4, #f5f0df);
-  border: 1px solid #e4e8d7;
+  background: linear-gradient(110deg, #e3eaf3, #f5f0df);
+  border: 1px solid #d6dfe9;
   border-radius: 12px;
   overflow: hidden;
   min-height: 345px;
@@ -138,18 +138,18 @@
   font-weight: 400;
   line-height: 1.55;
   letter-spacing: -0.8px;
-  color: #33523c;
+  color: #314154;
   font-synthesis: none;
 }
 .customer-hero h1 em {
   font-weight: 400;
-  color: #728a55;
+  color: #526d8d;
   font-style: italic;
 }
 .customer-hero p {
   font-size: 11px;
   line-height: 2;
-  color: #8e9d7c;
+  color: #7a8b9f;
   margin-top: 17px;
 }
 .customer-hero .button {
@@ -161,7 +161,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #a0ac8d;
+  color: #8b9bae;
   font-size: 8px;
   margin-top: 22px;
 }
@@ -194,7 +194,7 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 22px;
-  color: #486640;
+  color: #3e5168;
 }
 .customer-categories > button {
   display: flex;
@@ -204,46 +204,46 @@
   padding: 11px 12px;
   border-radius: 6px;
   font-size: 11px;
-  color: #91a17d;
+  color: #7b8da3;
   text-align: left;
   line-height: 1.7;
 }
 .customer-categories > button > svg:last-child:not(:first-child) {
   margin-left: auto;
-  color: #b4bea5;
+  color: #a4b0bf;
 }
 .customer-categories > button.active {
-  background: #ebf1e2;
-  color: #65854c;
+  background: #e1e9f2;
+  color: #496588;
   font-weight: 500;
 }
 .customer-categories > button:hover {
-  background: #f0f4e8;
+  background: #e7edf5;
 }
 .category-dot {
   height: 5px;
   width: 5px;
   border-radius: 50%;
-  background: #a7ba90;
+  background: #8ea3bc;
   flex-shrink: 0;
   margin: 0 5px;
 }
 .customer-category-divider {
   height: 1px;
-  background: #e6ecdd;
+  background: #dce4ed;
   margin: 18px 12px;
 }
 .customer-side-note {
   margin: 30px 12px 0;
-  border-top: 1px solid #e4ebd9;
+  border-top: 1px solid #d8e1ec;
   padding-top: 24px;
-  color: #a8b496;
+  color: #94a3b6;
   display: flex;
   gap: 12px;
   align-items: flex-start;
 }
 .customer-side-note > svg {
-  color: #a5b98d;
+  color: #8ba1bb;
 }
 .customer-side-note p {
   font-family: "Noto Serif", serif;
@@ -260,7 +260,7 @@
 }
 .customer-section-mark {
   font-size: 7px;
-  color: #b0ba9e;
+  color: #9daabb;
   letter-spacing: 0.8px;
 }
 .customer-site .section-heading h2 {
@@ -298,14 +298,14 @@
   gap: 4px;
 }
 .customer-search {
-  border: 1px solid #dfe8d5;
+  border: 1px solid #d4dde9;
   background: #fff;
   border-radius: 7px;
   padding: 11px 15px;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #9bae88;
+  color: #8699b0;
 }
 .customer-search input {
   border: 0;
@@ -313,18 +313,18 @@
   min-width: 0;
   flex: 1;
   font-size: 11px;
-  color: #668553;
+  color: #506988;
   background: transparent;
   padding: 3px;
 }
 .customer-search input::placeholder {
-  color: #adb99d;
+  color: #9ca9ba;
 }
 .customer-search select {
   border: 0;
-  border-left: 1px solid #e6edde;
+  border-left: 1px solid #dde5ee;
   padding-left: 15px;
-  color: #90a478;
+  color: #768ca6;
   font-size: 10px;
   background: transparent;
   max-width: 120px;
@@ -379,7 +379,7 @@
 }
 .customer-site .document-card-footer > button {
   font-size: 8px;
-  color: #79975e;
+  color: #5b779a;
   display: flex;
   gap: 5px;
   align-items: center;
@@ -414,15 +414,15 @@
   align-items: center;
   gap: 6px;
   font-size: 10px;
-  color: #8ba273;
-  border: 1px solid #dfe8d5;
+  color: #7188a4;
+  border: 1px solid #d4dde9;
   padding: 7px 9px;
   border-radius: 5px;
   background: white;
 }
 .customer-document-list {
   background: #fff;
-  border: 1px solid #e3eada;
+  border: 1px solid #d9e1eb;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -430,7 +430,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  border-bottom: 1px solid #e9efdf;
+  border-bottom: 1px solid #dee6f0;
   padding: 18px;
 }
 .customer-document-list article:last-child {
@@ -448,9 +448,9 @@
 }
 .customer-footer {
   padding: 24px 35px;
-  border-top: 1px solid #e6ecdc;
-  background: #f5f7ef;
-  color: #a4b193;
+  border-top: 1px solid #dbe3ed;
+  background: #eff3f7;
+  color: #92a0b2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -465,26 +465,26 @@
 .customer-footer strong {
   font-weight: 600;
   font-size: 15px;
-  color: #728b60;
+  color: #5e738d;
   letter-spacing: -0.5px;
 }
 .customer-footer > div > span {
   font-size: 9px;
   padding-left: 14px;
-  border-left: 1px solid #dce5d0;
+  border-left: 1px solid #cfd9e6;
 }
 .customer-toast {
   left: 50%;
 }
 .customer-demo-login {
-  border-top: 1px solid #e7edde;
+  border-top: 1px solid #dde5ee;
   margin-top: 23px;
   padding-top: 18px;
 }
 .customer-demo-login > p {
   font-size: 10px;
   line-height: 1.8;
-  color: #9fae8e;
+  color: #8c9cb0;
   margin-bottom: 14px;
 }
 .customer-menu-toggle {
@@ -607,12 +607,12 @@
     right: 0;
     top: 100%;
     background: #fff;
-    border-bottom: 1px solid #e4ebd9;
+    border-bottom: 1px solid #d8e1ec;
     margin: 0;
     padding: 15px 20px;
     justify-content: flex-start;
     flex-wrap: wrap;
-    box-shadow: 0 10px 15px #37532a08;
+    box-shadow: 0 10px 15px #283c5508;
   }
   .customer-header nav.open {
     display: flex;
@@ -713,7 +713,7 @@
   .customer-categories > button {
     width: auto;
     flex-shrink: 0;
-    border: 1px solid #e2e9d8;
+    border: 1px solid #d7e0ea;
     background: #fff;
     padding: 9px 11px;
     font-size: 9px;

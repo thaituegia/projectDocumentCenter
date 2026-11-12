@@ -3,6 +3,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {
+  PDFDocument,
+  PDFArray,
+  PDFRawStream,
+  decodePDFRawStream,
+} from "pdf-lib";
 process.env.DATA_DIR = await fs.mkdtemp(path.join(os.tmpdir(), "bacnha-test-"));
 process.env.NODE_ENV = "test";
 const { app } = await import("../server/index.js");
@@ -11,6 +17,7 @@ const { db, seed, all, one, insert, run, update, id, now, indexDoc } =
 const { can, ancestry, lifecycle } = await import("../server/authz.js");
 const { decryptMail } = await import("../server/mail.js");
 const { processOne } = await import("../server/worker.js");
+const { putObject } = await import("../server/storage.js");
 const ExcelJS = (await import("exceljs")).default;
 await seed();
 const server = app.listen(0, "127.0.0.1");
@@ -42,9 +49,12 @@ function client(portal = "internal") {
       if (res.headers.has("set-cookie"))
         cookie = res.headers.get("set-cookie").split(";")[0];
       const type = res.headers.get("content-type") || "";
-      const body = type.includes("json") ? await res.json() : await res.text();
+      const rawBytes = type.includes("json")
+        ? null
+        : Buffer.from(await res.arrayBuffer());
+      const body = rawBytes ? rawBytes.toString("utf8") : await res.json();
       if (body.csrf) csrf = body.csrf;
-      return { status: res.status, body };
+      return { status: res.status, body, rawBytes };
     },
     async login(userId) {
       return this.call("/dev/session", { method: "POST", body: { userId } });
@@ -93,6 +103,8 @@ await test("Bacnhabook functional API and permission regression suite", async (t
     assert.equal(r.status, 200);
     assert.ok(r.body.content.includes("Tài liệu minh họa"));
     assert.equal(r.body.object_key, undefined);
+    assert.equal(r.body.watermark_brand, "BÁC NHÃ BOOKS · THANHMAIHSK");
+    assert.equal(r.body.watermark, "Khách · Guest");
   });
   await t.test(
     "Guest cannot read Private preview by manually calling API",
@@ -110,6 +122,60 @@ await test("Bacnhabook functional API and permission regression suite", async (t
     async () => {
       assert.equal((await customer.call("/documents/d1/download")).status, 200);
       assert.equal((await guest.call("/documents/d1/download")).status, 403);
+    },
+  );
+  await t.test(
+    "PDF delivery is watermarked on every page and preserves the stored original",
+    async () => {
+      const original = await admin.call("/documents/d1/original");
+      const download = await customer.call("/documents/d1/download");
+      assert.equal(original.status, 200);
+      assert.equal(download.status, 200);
+      assert.notDeepEqual(download.rawBytes, original.rawBytes);
+      const sourcePdf = await PDFDocument.load(original.rawBytes);
+      const deliveredPdf = await PDFDocument.load(download.rawBytes);
+      assert.equal(deliveredPdf.getPageCount(), sourcePdf.getPageCount());
+      for (const page of deliveredPdf.getPages()) {
+        const contents = page.node.Contents();
+        const streams =
+          contents instanceof PDFArray
+            ? contents.asArray().map((ref) => deliveredPdf.context.lookup(ref))
+            : [contents];
+        const drawn = streams
+          .filter((s) => s instanceof PDFRawStream)
+          .map((s) =>
+            Buffer.from(decodePDFRawStream(s).decode()).toString("latin1"),
+          )
+          .join("\n");
+        assert.ok(
+          (drawn.match(/Tj/g) || []).length >= 6,
+          "two watermark blocks with brand names and identity per page",
+        );
+        assert.ok(
+          drawn.includes("0.59 0.08 0.17 rg"),
+          "ThanhmaiHSK watermark uses its red brand color",
+        );
+      }
+      const unchanged = await admin.call("/documents/d1/original");
+      assert.deepEqual(unchanged.rawBytes, original.rawBytes);
+      const preview = await customer.call("/documents/d1/preview");
+      assert.equal(preview.body.watermark, "nguyenan@example.test");
+    },
+  );
+  await t.test(
+    "An unreadable PDF cannot bypass delivery watermarking",
+    async () => {
+      const doc = one("SELECT * FROM documents WHERE id=?", "d1");
+      const key = `test-invalid-${id()}.pdf`;
+      await putObject(key, Buffer.from("not a PDF"), "application/pdf");
+      try {
+        update("documents", doc.id, { object_key: key });
+        const response = await customer.call("/documents/d1/download");
+        assert.equal(response.status, 422);
+        assert.match(response.body.error, /watermark/);
+      } finally {
+        update("documents", doc.id, { object_key: doc.object_key });
+      }
     },
   );
   await t.test("Ancestor Deny overrides a direct Allow", async () => {

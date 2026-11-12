@@ -5,7 +5,7 @@ Môi trường hiện tại: Node.js 24.22.1, npm 11.9.0, Linux, Chromium `/usr/
 | Lệnh / kiểm tra | Kết quả | Giới hạn |
 |---|---|---|
 | `npm run build` | PASS, Vite tạo bundle tĩnh, font tiếng Việt local | Không xác nhận deployment/UAT |
-| `npm test` | PASS, Node báo 43/43 gồm **42 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
+| `npm test` | PASS, Node báo 45/45 gồm **44 tình huống** + 1 test cha, không fail/skip | DB tạm SQLite, object local |
 | `npm run test:e2e` | PASS, **18/18** hành trình Chromium | Desktop và mobile 390×844; không phải toàn bộ 189 AC |
 | `npm run test:production` | PASS | Chỉ smoke mode production với DB mới: bundle, health, no demo login/seed/session; chưa production-ready |
 | `npm audit --omit=dev` | PASS, 0 vulnerabilities tại thời điểm chạy | Không thay security review; phụ thuộc cần kiểm tra lại định kỳ |
@@ -35,6 +35,13 @@ Guest listing filename nhưng không nhận metadata nhạy cảm; public previe
 13. Website nội bộ có trang đăng nhập riêng khi đăng xuất, không hiển thị thư viện Guest.
 
 14–18. Trang làm việc riêng cho Super Admin, Admin Bacnhabook, HCNS, quản lý kho và nhân viên: đúng tiêu đề/nhiệm vụ, kho mặc định sau khi chuyển vai trò và reload, responsive 390×844, chặn trang cài đặt với vai trò không phải Super Admin cả UI và API; nhân viên cũng bị chặn trang/API người dùng. Ảnh từng vai trò được tạo tại `test-results/workspace-<id>.png` và `test-results/workspace-<id>-mobile.png` (output ignored).
+
+## Theme và watermark thương hiệu
+
+- Palette xanh dương/xanh đậm Bác Nhã Books và đỏ đô ThanhmaiHSK; kiểm tra lại browser workflows desktop/mobile và font tiếng Việt.
+- Bản xem có tám cụm watermark chứa hai thương hiệu và email của phiên đăng nhập; assertion trong hành trình Library/preview. Watermark nằm trong trang nội dung để theo phần phóng to và canvas toàn màn hình.
+- API regression xác nhận bản PDF tải có các lệnh vẽ watermark trên từng trang, giữ số trang, và original trước/sau tải không thay đổi byte; PDF không đọc được trả 422.
+- Kiểm tra bổ sung bằng `pdftotext -raw` trên PDF mẫu hai trang: mỗi trang chứa hai lần “BÁC NHÃ BOOKS”, “THANHMAIHSK” và email người xem; đã render trang mẫu để kiểm tra trực quan. Không xác nhận watermark nhúng cho file tải không phải PDF.
 
 ## Chưa được kiểm chứng / chưa đủ release
 

@@ -57,6 +57,12 @@ Không cần nhập khóa ngay để trải nghiệm local. Khóa bí mật khô
 
 ## Kiểm thử
 
+### Nhận diện thương hiệu và watermark
+
+Theme dùng xanh Bác Nhã Books (`#086bad` → `#30336c`) và đỏ đô ThanhmaiHSK (`#97152b`) theo logo tham chiếu. Hai thương hiệu xuất hiện trên website và bản xem tài liệu.
+
+Bản xem có watermark lặp tên hai thương hiệu và email người xem do backend xác định; khách xem Public được ghi “Khách · Guest”. Khi có quyền DOWNLOAD, file có MIME PDF được tạo bản tải riêng có watermark trên mọi trang. File gốc trong storage và đường lấy original dành cho người có MANAGE không bị sửa. PDF lỗi/mã hóa không thể đóng watermark trả 422, không trả bản không đóng dấu. Word/Excel/audio/video chưa có watermark nhúng trong file tải; watermark bản xem vẫn áp dụng với các bản preview được hỗ trợ. Watermark hỗ trợ nhận diện, không ngăn chụp màn hình hoặc bảo đảm không thể loại bỏ.
+
 ```bash
 npm test
 npm run build

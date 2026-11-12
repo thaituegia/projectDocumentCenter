@@ -88,6 +88,8 @@ import {
 import "./styles.css";
 import "./internal.css";
 import { Workspace, workspaces, preferredRepository } from "./workspaces";
+import { Brand, EducationBrand } from "./brand";
+import "./brand.css";
 function App() {
   const [user, setUser] = useState(null),
     [ready, setReady] = useState(false),
@@ -404,8 +406,7 @@ function App() {
       <div className="internal-login">
         <div className="internal-login-card">
           <div className="internal-login-brand">
-            <BookOpen size={28} />
-            <strong>Bác Nhã Book</strong>
+            <Brand />
             <span>QUẢN TRỊ & NỘI BỘ</span>
           </div>
           <h1>Không gian làm việc nội bộ</h1>
@@ -441,13 +442,7 @@ function App() {
             navigate("/library");
           }}
         >
-          <span className="brand-mark">
-            <BookOpen size={25} strokeWidth={1.8} />
-          </span>
-          <span>
-            bacnhabook<span className="brand-dot">.</span>
-            <small>QUẢN TRỊ & NỘI BỘ</small>
-          </span>
+          <Brand compact />
         </a>
         <div className="workspace-label">
           <span className="workspace-icon">B</span>
@@ -520,6 +515,7 @@ function App() {
           </>
         )}
         <div className="sidebar-bottom">
+          <EducationBrand />
           <div className="knowledge-note">
             <span>✦</span>
             <p>

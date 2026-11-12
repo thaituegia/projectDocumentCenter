@@ -42,6 +42,8 @@ import { LoginDialog } from "./modals";
 import { Viewer, Requests, Notifications } from "./pages";
 import "./styles.css";
 import "./customer.css";
+import { Brand, EducationBrand } from "./brand";
+import "./brand.css";
 function CustomerApp() {
   const [ready, setReady] = useState(false),
     [user, setUser] = useState(null),
@@ -215,13 +217,7 @@ function CustomerApp() {
               navigate("/");
             }}
           >
-            <span className="brand-mark">
-              <BookOpen size={25} />
-            </span>
-            <span>
-              bác nhã book<span className="brand-dot">.</span>
-              <small>HỌC MỖI NGÀY, TIẾN XA HƠN</small>
-            </span>
+            <Brand />
           </a>
           <nav className={mobile ? "open" : ""} aria-label="Học liệu của bạn">
             {[
@@ -349,6 +345,7 @@ function CustomerApp() {
             {home && !folder && !query && (
               <section className="customer-hero">
                 <div className="customer-hero-copy">
+                  <EducationBrand />
                   <span className="eyebrow">
                     <span />
                     ĐỒNG HÀNH CÙNG BÁC NHÃ BOOK
@@ -767,9 +764,8 @@ function CustomerApp() {
       </main>
       <footer className="customer-footer">
         <div>
-          <BookOpen size={21} />
-          <strong>bác nhã book.</strong>
-          <span>Kết nối tri thức, kiến tạo tương lai.</span>
+          <Brand compact />
+          <EducationBrand />
         </div>
         <span>
           © {new Date().getFullYear()} Bác Nhã Book · Học mỗi ngày, tiến xa hơn.

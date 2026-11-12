@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { Brand, EducationBrand, DocumentWatermark } from "./brand";
 import {
   BookOpen,
   FileText,
@@ -1467,8 +1468,8 @@ export function Viewer({
                   style={{ fontSize: zoom + "%" }}
                 >
                   <div className="preview-paper-brand">
-                    <BookOpen size={20} />
-                    BACNHABOOK<span>HỌC LIỆU MINH HỌA</span>
+                    <Brand compact />
+                    <EducationBrand />
                   </div>
                   <div className="paper-rule" />
                   <h2>{preview.content.split("\n")[0]}</h2>
@@ -1485,14 +1486,10 @@ export function Viewer({
                       )}
                   </div>
                   <div className="paper-footer">
-                    BACNHABOOK · HỌC MỖI NGÀY, TIẾN XA HƠN.
+                    BÁC NHÃ BOOKS · THANHMAIHSK · {preview.watermark}
                   </div>
+                  <DocumentWatermark identity={preview.watermark} />
                 </article>
-                <div className="watermark" aria-hidden="true">
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <span key={i}>{preview.watermark}</span>
-                  ))}
-                </div>
               </div>
             )
           )}
